@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Yichongtian.github.io</id>
-    <title>Gridea</title>
-    <updated>2021-09-04T17:06:03.788Z</updated>
+    <title>Onion</title>
+    <updated>2021-09-04T17:12:15.266Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Yichongtian.github.io"/>
     <link rel="self" href="https://Yichongtian.github.io/atom.xml"/>
     <subtitle>吾日三省吾身</subtitle>
     <logo>https://Yichongtian.github.io/images/avatar.png</logo>
     <icon>https://Yichongtian.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, Gridea</rights>
+    <rights>All rights reserved 2021, Onion</rights>
     <entry>
         <title type="html"><![CDATA[【随笔】2021/9/4]]></title>
         <id>https://Yichongtian.github.io/post/sui-bi-202194/</id>
@@ -23,38 +23,6 @@
     终于是得到了你的原谅，得到了你对于“能继续当朋友吗？”的肯定的回答，但是我真的保留了这段友谊吗？好像没有，我们之间的友谊现在似乎只凭着嘴上的“能”维系着，我们的友谊不会回到9月4号下午6点之前的状态了，至少短期内不会。你没法当作无事发生，我也做不到，我不知道下一次见面我该用什么样的表情面对你，应该笑吗？显得自己仿佛并不重视这件事？应该面无表情吗？表示自己已经努力把这件事尘封到记忆了？应该一见面就继续道歉吗？害怕又将你拉回到这段痛苦的经历。
     我后悔对你问出这个问题吗？当然后悔。但是如果我不问，又会有谁是那个被我问的女孩？谁会一把把我拉出这色欲的深渊？感谢你给我上的这一课，虽然话并不多，但是很深刻，从我害怕的那一刻起到现在第二天的凌晨1点我正在写这篇文章，我无时无刻都在思考下午发生的事情，饭也吃不下，别人说话也不接，不知道对你是否也有这样的影响，历史无法改写，我真的很抱歉。我只希望我能一点一点拾起被我打碎的友谊，有朝一日还能面对面谈笑风生。
     对不起。</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Hello Gridea]]></title>
-        <id>https://Yichongtian.github.io/post/hello-gridea/</id>
-        <link href="https://Yichongtian.github.io/post/hello-gridea/">
-        </link>
-        <updated>2018-12-11T16:00:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-<!-- more -->
-<p><a href="https://github.com/getgridea/gridea">Github</a><br>
-<a href="https://gridea.dev/">Gridea 主页</a><br>
-<a href="http://fehey.com/">示例网站</a></p>
-<h2 id="特性">特性👇</h2>
-<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
-<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
-<p>🏷️  你可以对文章进行标签分组</p>
-<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
-<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
-<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
-<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
-<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
-<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
-<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
-<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
-<p>未来，它一定会成为你离不开的伙伴</p>
-<p>尽情发挥你的才华吧！</p>
-<p>😘 Enjoy~</p>
 ]]></content>
     </entry>
 </feed>
