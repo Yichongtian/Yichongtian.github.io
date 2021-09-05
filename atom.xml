@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Yichongtian.github.io</id>
     <title>Onion|个人博客</title>
-    <updated>2021-09-04T18:27:11.523Z</updated>
+    <updated>2021-09-05T14:27:04.040Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Yichongtian.github.io"/>
     <link rel="self" href="https://Yichongtian.github.io/atom.xml"/>
@@ -11,7 +11,18 @@
     <icon>https://Yichongtian.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Onion|个人博客</rights>
     <entry>
-        <title type="html"><![CDATA[【随笔】2021/9/4]]></title>
+        <title type="html"><![CDATA[【随笔】2021/9/5 好起来了]]></title>
+        <id>https://Yichongtian.github.io/post/sui-bi-2021/</id>
+        <link href="https://Yichongtian.github.io/post/sui-bi-2021/">
+        </link>
+        <updated>2021-09-05T14:21:30.000Z</updated>
+        <content type="html"><![CDATA[<p>好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了，为什么要说自己态度不好呢，那是你最应该有的态度，如果不是因为你的态度，我根本不会认识到自己的错误，也不会去反省自己的。</p>
+<p>不管怎么说，真的好起来了😋</p>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1630851752373.jpg" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【随笔】2021/9/4 反省]]></title>
         <id>https://Yichongtian.github.io/post/sui-bi-202194/</id>
         <link href="https://Yichongtian.github.io/post/sui-bi-202194/">
         </link>
