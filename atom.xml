@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Yichongtian.github.io</id>
     <title>Onion|个人博客</title>
-    <updated>2021-09-06T19:16:47.097Z</updated>
+    <updated>2021-11-13T07:55:52.400Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Yichongtian.github.io"/>
     <link rel="self" href="https://Yichongtian.github.io/atom.xml"/>
@@ -10,6 +10,21 @@
     <logo>https://Yichongtian.github.io/images/avatar.png</logo>
     <icon>https://Yichongtian.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Onion|个人博客</rights>
+    <entry>
+        <title type="html"><![CDATA[123]]></title>
+        <id>https://Yichongtian.github.io/post/123/</id>
+        <link href="https://Yichongtian.github.io/post/123/">
+        </link>
+        <updated>2021-10-24T05:30:37.000Z</updated>
+        <content type="html"><![CDATA[<p><em>斜体文本</em><br>
+##我是二级标题<br>
+<code>printf()</code>函数</p>
+<pre><code>ui-&gt;progressBar-&gt;setMinimum(0);
+ui-&gt;progressBar-&gt;setMaximum(gameTime);
+ui-&gt;progressBar-&gt;setValue(gameTime);
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[【随笔】2021/9/7虚无主义]]></title>
         <id>https://Yichongtian.github.io/post/sui-bi-202197/</id>
@@ -26,32 +41,6 @@
 <p>我没有瑞克的全知全能，但是虚无主义它就在那里，我找不到任何的观点去反驳虚无主义的正确性，我也随时梦想努力实现财富自由开豪车住豪宅，但是一旦陷入对虚无主义的思考我又会觉得哪怕混日子月薪三四千，住出租屋甚至躺平啃老，放弃一切社交，单纯为了活着而活着，我也依然能面无表情的活下去。</p>
 <p>（思维混乱写不下去了）</p>
 <p>为什么会在存在主义和虚无主义之间反复跳跃，我也想每日如一地热爱生活，但是还是那句话，虚无主义始终在那里，如何说服自己不去想，或者到底应该信奉虚无主义还是逃避虚无主义，我想不明白。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【随笔】2021/9/5 好起来了]]></title>
-        <id>https://Yichongtian.github.io/post/sui-bi-2021/</id>
-        <link href="https://Yichongtian.github.io/post/sui-bi-2021/">
-        </link>
-        <updated>2021-09-05T14:21:30.000Z</updated>
-        <content type="html"><![CDATA[<p>好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了好起来了，为什么要说自己态度不好呢，那是你最应该有的态度，如果不是因为你的态度，我根本不会认识到自己的错误，也不会去反省自己的。</p>
-<p>不管怎么说，真的好起来了😋</p>
-<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1630851752373.jpg" alt="" loading="lazy"></figure>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[【随笔】2021/9/4 反省]]></title>
-        <id>https://Yichongtian.github.io/post/sui-bi-202194/</id>
-        <link href="https://Yichongtian.github.io/post/sui-bi-202194/">
-        </link>
-        <updated>2021-09-04T16:09:20.000Z</updated>
-        <content type="html"><![CDATA[<p>差点亲手葬送了自己的一段友谊，或者说，已经让它变得伤痕累累。</p>
-<p>天空多云，下午六点之前，我的心情都是明朗的，和朋友一起开黑玩游戏饯行。</p>
-<p>六点过，我在微信对你说出了那句含有“边缘性行为”的问句，毫无疑问，遭到了斩钉截铁的拒绝，并表示这让你感受到了不尊重。短短几个字，我的心揪了起来，我感觉有什么东西正在飞速远离自己，是友情吗？我说不清楚，但我明确感受到了如果我不做点什么的话，这个东西会马上消失在我的世界，我很害怕，真的很害怕，害怕一段来之不易的友谊被我亲手丢掉，我开始反悔，自责，发了疯似地道歉，祈求能挽留住这段友情，我疯狂地反省自己的思想，我也知道一个人长期以来形成的三观难以短期内实现变化，我发出来的那些道歉、自责的话看上去很像是为了挽回而挽回。但是自从那一瞬，打心底里说，我对我自己产生了厌恶，询问在2021年9月4日下午六点之前的自己为什么会产生那种明显的没有正常人能接受的想法，以往的自己因为这种想法没有给自己带来任何的负面影响而逃避思考问题的本质，觉得“性嘛，多正常，大家都成年了，只要两情相悦，没什么大不了的”，现在却发现这涉及到一个人的责任、理性，人与其他动物最本质的区别就是拥有理性，“性”本不丑恶，但是不带理性的“性”却如此可怕，它是一个人心底里的兽欲，我把这本应交给理性管理的欲望强行展现给你，让你害怕、难过，过去的我竟然没有想到这显而易见的一点。</p>
-<p>“对不起”</p>
-<p>终于是得到了你的原谅，得到了你对于“能继续当朋友吗？”的肯定的回答，但是我真的保留了这段友谊吗？好像没有，我们之间的友谊现在似乎只凭着嘴上的“能”维系着，我们的友谊不会回到9月4号下午6点之前的状态了，至少短期内不会。你没法当作无事发生，我也做不到，我不知道下一次见面我该用什么样的表情面对你，应该笑吗？显得自己仿佛并不重视这件事？应该面无表情吗？表示自己已经努力把这件事尘封到记忆了？应该一见面就继续道歉吗？害怕又将你拉回到这段痛苦的经历。</p>
-<p>我后悔对你问出这个问题吗？当然后悔。但是如果我不问，又会有谁是那个被我问的女孩？谁会一把把我拉出这色欲的深渊？感谢你给我上的这一课，虽然话并不多，但是很深刻，从我害怕的那一刻起到现在第二天的凌晨1点我正在写这篇文章，我无时无刻都在思考下午发生的事情，饭也吃不下，别人说话也不接，不知道对你是否也有这样的影响，历史无法改写，我真的很抱歉。我只希望我能一点一点拾起被我打碎的友谊，有朝一日还能面对面谈笑风生。</p>
-<p>对不起......</p>
 ]]></content>
     </entry>
 </feed>
