@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>leetcode 189.轮转数组 | Onion|个人博客</title>
+<title>leetcode 167.两数之和Ⅱ-输入有序数组 | Onion|个人博客</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,13 +18,7 @@
 
 
 
-    <meta name="description" content="给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
-示例：
-
-输入: nums = [1,2,3,4,5,6,7], k = 3
-输出: [5,6,7,1,2,3,4]
-解释:
-向右轮转 1 步: [7,1,2,3,4,..." />
+    <meta name="description" content="给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 numbers[index1]和 numbers[index2] ，..." />
     <meta name="keywords" content="力扣,普通" />
   </head>
   <body>
@@ -96,83 +90,65 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">leetcode 189.轮转数组</h2>
-            <div class="post-date">2022-03-07</div>
+            <h2 class="post-title">leetcode 167.两数之和Ⅱ-输入有序数组</h2>
+            <div class="post-date">2022-03-08</div>
             
             <div class="post-content" v-pre>
-              <p>给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。<br>
-示例：</p>
-<blockquote>
-<p>输入: nums = [1,2,3,4,5,6,7], k = 3<br>
-输出: [5,6,7,1,2,3,4]<br>
-解释:<br>
-向右轮转 1 步: [7,1,2,3,4,5,6]<br>
-向右轮转 2 步: [6,7,1,2,3,4,5]<br>
-向右轮转 3 步: [5,6,7,1,2,3,4]<br>
-提示:</p>
-</blockquote>
+              <p>给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 <code>numbers[index1]</code>和 <code>numbers[index2]</code> ，则 <code>1 &lt;= index1 &lt; index2 &lt;= numbers.length</code>。</p>
+<p>以长度为 2 的整数数组 <code>[index1, index2]</code>的形式返回这两个整数的下标 index1 和 index2。</p>
+<p>你可以假设每个输入 只对应唯一的答案 ，而且你 <strong>不可以</strong> 重复使用相同的元素。</p>
+<p>你所设计的解决方案必须只使用<strong>常量级</strong>的额外空间。</p>
+<p>示例1：</p>
+<pre><code>输入：numbers = [2,7,11,15], target = 9
+输出：[1,2]
+解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。返回 [1, 2] 。
+</code></pre>
+<p>提示：</p>
 <ul>
-<li>1 &lt;= nums.length &lt;= 105'</li>
-<li>-2^31 &lt;= nums[i] &lt;= 2^31 - 1</li>
-<li>0 &lt;= k &lt;= 105</li>
+<li>2 &lt;= numbers.length &lt;= 3 * 104</li>
+<li>-1000 &lt;= numbers[i] &lt;= 1000</li>
+<li>numbers 按 非递减顺序 排列</li>
+<li>-1000 &lt;= target &lt;= 1000</li>
+<li>仅存在一个有效答案</li>
 </ul>
-<p>解法1（普通解法）：</p>
+<p>解法1（二分查找）：<br>
+首先固定一个数，然后寻找第二个数，由于数组有序，寻找第二个数使用二分查找，为避免重复寻找，第二个数只在第一个数右侧寻找</p>
 <pre><code>class Solution {
-    public void rotate(int[] nums, int k) {
-        int tk=k%nums.length;
-        int[] newnums= new int[nums.length];
-        for(int i=0;i&lt;nums.length;i++){
-            newnums[(i+tk)%nums.length]=nums[i];
+    public int[] twoSum(int[] numbers, int target) {
+        int[] ans=new int[2];
+        for(int i=0;i&lt;numbers.length;i++){
+            ans[0]=i+1;
+            int left=i+1,right=numbers.length-1;
+            while(left&lt;=right){
+                int mid=left+(right-left)/2;
+                if(numbers[i]+numbers[mid]==target){
+                    ans[1]=mid+1;
+                    return ans;
+                }else if(numbers[i]+numbers[mid]&lt;target){
+                    left=mid+1;
+                }else{
+                    right=mid-1;
+                }
+            }
         }
-        System.arraycopy(newnums,0,nums,0,nums.length);
+        return ans;
     }
 }
 </code></pre>
-<p>解法2(<strong>空间复杂度O(1)</strong>)：<br>
-假设数组有六个数[1,2,3,4,5,6],k=2.定义一个temp存放n[0]的数据，首先看n[0]，右移两位应该移到n[2],然后交换n[2]和temp，接着从n[2]开始右移两位，交换n[4]和temp，（取模）循环下去直到回到n[0]，完成第一轮交换，有的数据还没有遍历到，为了访问到所有的数据，从n[1]开始继续上述操作，循环次数为gcd(k,n)</p>
+<p>解法2（双指针）：<br>
+初始时两个指针分别指向第一个元素位置和最后一个元素的位置。每次计算两个指针指向的两个元素之和，并和目标值比较。如果两个元素之和等于目标值，则发现了唯一解。如果两个元素之和小于目标值，则将左侧指针右移一位。如果两个元素之和大于目标值，则将右侧指针左移一位。移动指针之后，重复上述操作，直到找到答案。</p>
 <pre><code>class Solution {
-    public void rotate(int[] nums, int k) {
-        int n = nums.length;
-        k = k % n;
-        int count = gcd(k, n);
-        for (int start = 0; start &lt; count; ++start) {
-            int current = start;
-            int prev = nums[start];
-            do {
-                int next = (current + k) % n;
-                int temp = nums[next];
-                nums[next] = prev;
-                prev = temp;
-                current = next;
-            } while (start != current);
+    public int[] twoSum(int[] numbers, int target) {
+        int left=0,right=numbers.length-1;
+        while(left&lt;right){
+            if(numbers[left]+numbers[right]==target){
+                return new int[]{left+1,right+1};
+            }else if(numbers[left]+numbers[right]&lt;target)
+                left++;
+            else
+                right--;
         }
-    }
-
-    public int gcd(int x, int y) {
-        return y &gt; 0 ? gcd(y, x % y) : x;
-    }
-}
-</code></pre>
-<p>解法3（<strong>利用reverse巧解</strong>）<br>
-step1.全部翻转<br>
-step2.翻转[0,(k-1)mod (n-1)]<br>
-step3.翻转[k mod n,n-1]</p>
-<pre><code>class Solution {
-    public void rotate(int[] nums, int k) {
-        k %= nums.length;
-        reverse(nums, 0, nums.length - 1);
-        reverse(nums, 0, k - 1);
-     reverse(nums, k, nums.length - 1);
-    }
-
-    public void reverse(int[] nums, int start, int end) {
-        while (start &lt; end) {
-            int temp = nums[start];
-            nums[start] = nums[end];
-            nums[end] = temp;
-            start += 1;
-            end -= 1;
-        }
+        return new int[]{-1,-1};
     }
 }
 </code></pre>
@@ -194,9 +170,9 @@ step3.翻转[k mod n,n-1]</p>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://Yichongtian.github.io/post/sui-bi-202197/">
+                <a href="https://Yichongtian.github.io/post/leetcode-189lun-zhuan-shu-zu/">
                   <h3 class="post-title">
-                    【随笔】2021/9/7虚无主义
+                    leetcode 189.轮转数组
                   </h3>
                 </a>
               </div>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://Yichongtian.github.io</id>
     <title>Onion|个人博客</title>
-    <updated>2022-03-07T14:56:50.735Z</updated>
+    <updated>2022-03-08T10:09:11.455Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://Yichongtian.github.io"/>
     <link rel="self" href="https://Yichongtian.github.io/atom.xml"/>
@@ -10,6 +10,72 @@
     <logo>https://Yichongtian.github.io/images/avatar.png</logo>
     <icon>https://Yichongtian.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, Onion|个人博客</rights>
+    <entry>
+        <title type="html"><![CDATA[leetcode 167.两数之和Ⅱ-输入有序数组]]></title>
+        <id>https://Yichongtian.github.io/post/leetcode-167liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu/</id>
+        <link href="https://Yichongtian.github.io/post/leetcode-167liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu/">
+        </link>
+        <updated>2022-03-08T09:44:36.000Z</updated>
+        <content type="html"><![CDATA[<p>给你一个下标从 1 开始的整数数组 numbers ，该数组已按 非递减顺序排列  ，请你从数组中找出满足相加之和等于目标数 target 的两个数。如果设这两个数分别是 <code>numbers[index1]</code>和 <code>numbers[index2]</code> ，则 <code>1 &lt;= index1 &lt; index2 &lt;= numbers.length</code>。</p>
+<p>以长度为 2 的整数数组 <code>[index1, index2]</code>的形式返回这两个整数的下标 index1 和 index2。</p>
+<p>你可以假设每个输入 只对应唯一的答案 ，而且你 <strong>不可以</strong> 重复使用相同的元素。</p>
+<p>你所设计的解决方案必须只使用<strong>常量级</strong>的额外空间。</p>
+<p>示例1：</p>
+<pre><code>输入：numbers = [2,7,11,15], target = 9
+输出：[1,2]
+解释：2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。返回 [1, 2] 。
+</code></pre>
+<p>提示：</p>
+<ul>
+<li>2 &lt;= numbers.length &lt;= 3 * 104</li>
+<li>-1000 &lt;= numbers[i] &lt;= 1000</li>
+<li>numbers 按 非递减顺序 排列</li>
+<li>-1000 &lt;= target &lt;= 1000</li>
+<li>仅存在一个有效答案</li>
+</ul>
+<p>解法1（二分查找）：<br>
+首先固定一个数，然后寻找第二个数，由于数组有序，寻找第二个数使用二分查找，为避免重复寻找，第二个数只在第一个数右侧寻找</p>
+<pre><code>class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int[] ans=new int[2];
+        for(int i=0;i&lt;numbers.length;i++){
+            ans[0]=i+1;
+            int left=i+1,right=numbers.length-1;
+            while(left&lt;=right){
+                int mid=left+(right-left)/2;
+                if(numbers[i]+numbers[mid]==target){
+                    ans[1]=mid+1;
+                    return ans;
+                }else if(numbers[i]+numbers[mid]&lt;target){
+                    left=mid+1;
+                }else{
+                    right=mid-1;
+                }
+            }
+        }
+        return ans;
+    }
+}
+</code></pre>
+<p>解法2（双指针）：<br>
+初始时两个指针分别指向第一个元素位置和最后一个元素的位置。每次计算两个指针指向的两个元素之和，并和目标值比较。如果两个元素之和等于目标值，则发现了唯一解。如果两个元素之和小于目标值，则将左侧指针右移一位。如果两个元素之和大于目标值，则将右侧指针左移一位。移动指针之后，重复上述操作，直到找到答案。</p>
+<pre><code>class Solution {
+    public int[] twoSum(int[] numbers, int target) {
+        int left=0,right=numbers.length-1;
+        while(left&lt;right){
+            if(numbers[left]+numbers[right]==target){
+                return new int[]{left+1,right+1};
+            }else if(numbers[left]+numbers[right]&lt;target)
+                left++;
+            else
+                right--;
+        }
+        return new int[]{-1,-1};
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[leetcode 189.轮转数组]]></title>
         <id>https://Yichongtian.github.io/post/leetcode-189lun-zhuan-shu-zu/</id>
