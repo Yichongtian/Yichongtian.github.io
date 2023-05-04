@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[面试题]MySQL | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+undolog和redolog的区别
+undolog记录的是逻辑日志，需要回滚时通过逆向操作恢复原来的数据
+redolog记录的是物理日志，定期将脏页刷新到磁盘中（先刷新到缓冲区，再刷新到系统缓冲，再刷新到磁盘）
+redolog保证了事务..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[面试题]MySQL</h2>
+            <div class="post-date">2023-05-04</div>
+            
+            <div class="post-content" v-pre>
+              <ol>
+<li><strong>undolog和redolog的区别</strong><br>
+undolog记录的是逻辑日志，需要回滚时通过逆向操作恢复原来的数据<br>
+redolog记录的是物理日志，定期将脏页刷新到磁盘中（先刷新到缓冲区，再刷新到系统缓冲，再刷新到磁盘）<br>
+redolog保证了事务的持久性，undolog保证了事务的一致性和原子性<hr/>
+</li>
+<li><strong>事务的隔离性怎么保证</strong> / <strong>解释一下MVCC</strong><br>
+MVCC+排他锁（一个事务获取了一行的排他锁，其他事务不能获取改行的其他锁）<br>
+通过三个部分：隐藏字段 -&gt; undolog版本链 -&gt; readView<br>
+隐藏字段为：最近一次修改该行的事务id、上一个版本的记录地址，（还有个ROW_ID这里用不上）<br>
+事务中的每一个修改操作都会对这个版本链进行更新，更新的内容除了逻辑操作外还有上述两个隐藏字段，读的时候会产生readView，根据readView中的数据和<strong>版本</strong>链来比较来判断读取哪个<strong>版本</strong>（个人总结为找到最晚提交的事务），不同隔离级别生成readView规则不同。</li>
+</ol>
+<hr/>
+<ol start="3">
+<li><strong>什么是索引</strong>/<strong>底层数据结构</strong><br>
+索引是一种通过空间换时间的数据结构，可以加快查询的速度，降低IO成本（无需全盘扫描）<br>
+InnoDB引擎采用B+树，矮胖树，阶数多，路径短，好处是非叶子节点只存储指针，索引一页里面可以存很多指针，也就降低了磁盘IO。<br>
+B树和B+树区别：B树的非叶子节点也会存放数据，范围查询的时候B+树效率更高（双向链表）</li>
+</ol>
+<hr/>
+<ol start="4">
+<li><strong>如何定位慢查询</strong><br>
+有一些别的工具可以用，也可以用mysql自带的慢查询日志，默认是关闭的，通过设置快慢阈值来记录超过阈值的查询语句</li>
+</ol>
+<hr/>
+<ol start="5">
+<li><strong>找到了很慢的SQL，怎么分析他呢</strong><br>
+用EXPLAIN来查看执行情况<br>
+possible keys可能用到的索引，key用到的索引，key_len索引长度，通过<code>key和key_len</code>来判断是否命中索引，<code>Extra</code>可能会有额外的优化建议（例如Using index condition就是使用了索引但是还需要回表查询），<code>type</code>为sql的连接类型，性能由好到差为NULL(未使用表), system(使用系统表), const(根据主键查询), eq_ref(主键索引/唯一索引), ref(索引), range(带索引的范围查询), index(遍历索引树), all(全盘扫描)</li>
+</ol>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/jvmnei-cun-guan-li/">
+                  <h3 class="post-title">
+                    [JVM]内存管理
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

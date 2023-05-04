@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]集合框架&lt;一&gt; | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="集合框架的概述
+
+集合、数组都是对多个数据进行存储操作的结构，简称Java容器。
+说明：此时的存储，主要指的是内存层面的存储，不涉及到持久化的存储。
+1数组在存储多个数据方面的特点：
+
+一旦初始化以后，其长度就确定了。
+数组一旦定义好，其元..." />
+    <meta name="keywords" content="java" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]集合框架&lt;一&gt;</h2>
+            <div class="post-date">2023-03-05</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="集合框架的概述">集合框架的概述</h1>
+<ol>
+<li>集合、数组都是对多个数据进行存储操作的结构，简称Java容器。<br>
+<strong>说明</strong>：此时的存储，主要指的是内存层面的存储，不涉及到持久化的存储。</li>
+<li>1数组在存储多个数据方面的特点：
+<ul>
+<li>一旦初始化以后，其长度就确定了。</li>
+<li>数组一旦定义好，其元素的类型也就确定了，就只能操作指定类型的数据了。比如：<code>String[] arr; int[] arr1; Object[] arr2;</code><br>
+2 数组在存储多个数据方面的缺点：</li>
+<li>一旦初始化，长度不可修改</li>
+<li>数组提供的方法有限，且效率不高。</li>
+</ul>
+</li>
+</ol>
+<h1 id="java集合可分为collection和map两种体系"><code>Java</code>集合可分为<code>Collection</code>和<code>Map</code>两种体系</h1>
+<ul>
+<li><code>Collection</code>接口：<strong>单列数据</strong>，定义了存取一组对象的方法集合
+<ul>
+<li><code>List</code>：元素有序、可重复的集合（<code>ArrayList</code>、<code>LinkedList</code>、<code>Vector</code>）</li>
+<li><code>Set</code>：元素无序、不可重复的集合（<code>HashSet</code>、<code>LinkedHashSet</code>、<code>TreeSet</code>）<br>
+<img src="https://Yichongtian.github.io/post-images/1680511395356.png" alt="" loading="lazy"></li>
+</ul>
+</li>
+<li><code>Map</code>接口：<strong>双列数据</strong>，保存具有映射关系&quot;Key-value对&quot;的集合（<code>HashMap</code>、<code>LinkedHashMap</code>、<code>TreeMap</code>、<code>HashTable</code>、<code>Properties</code>）<br>
+<img src="https://Yichongtian.github.io/post-images/1680511401682.png" alt="" loading="lazy"></li>
+</ul>
+<h1 id="collection接口和常用方法">Collection接口和常用方法</h1>
+<h2 id="collection接口遍历元素的方式1使用iterator迭代器"><code>Collection</code>接口遍历元素的方式1：使用<code>Iterator</code>（迭代器）</h2>
+<h3 id="基本介绍">基本介绍</h3>
+<ol>
+<li><code>Iterator</code>对象成为迭代器，主要用于遍历<code>Collection</code>集合中的元素</li>
+<li><strong>所有实现了<code>Collection</code>接口的集合类都有一个<code>iterator()</code>方法，用以返回一个实现了<code>Iterator</code>接口的对象，即可返回一个迭代器。当一个类实现了<code>Iterable&lt;T&gt;</code>接口时，它必须提供一个<code>iterator()</code>方法的实现。这个方法返回一个实现了<code>Iterator&lt;T&gt;</code>接口的类的实例，该类提供了具体的遍历实现，所以不会出现类型错误或者编译错误。</strong></li>
+<li><code>Iterator</code>仅用于遍历集合，本身并不存放对象</li>
+</ol>
+<h3 id="迭代器的执行原理">迭代器的执行原理</h3>
+<pre><code class="language-java">Iterator iterator = collection.iterator();
+while (iterator.hasNext()){
+    System.out.println(iterator.next());
+}
+</code></pre>
+<p><code>iterator.next()</code>的作用：1.指针下移 2.将下移后指向的元素返回<br>
+<em>注意：在调用<code>iterator.next()</code>方法之前必须调用i<code>terator.hasNext()</code>方法。如果不调用且下一条记录无效，直接调用i<code>terator.next()</code>会抛出<code>NoSuchElementExcrption</code>异常</em><br>
+<strong>（冷知识：<code>ctrl</code>+<code>j</code>调出idea快捷键）</strong><br>
+<img src="https://Yichongtian.github.io/post-images/1680536035388.png" alt="" loading="lazy"></p>
+<h2 id="collection接口遍历元素的方式2使用for循环增强"><code>Collection</code>接口遍历元素的方式2：使用for循环增强</h2>
+<p>增强for循环只能用于遍历集合或数组，<strong>底层仍然是迭代器</strong>（使用增强for时打断点会发现它依然会调用迭代器的<code>hasNext()</code>、<code>next()</code>方法）</p>
+<h3 id="基本语法">基本语法</h3>
+<pre><code class="language-java">for (Object obj : collection) {
+    System.out.println(obj);
+}
+</code></pre>
+<h1 id="arraylist底层结构和源码分析">ArrayList底层结构和源码分析</h1>
+<h2 id="arraylist的注意事项">ArrayList的注意事项：</h2>
+<ol>
+<li>permit all elements，including null</li>
+<li>由数组来实现数据存储</li>
+<li><code>ArrayList</code>基本等同于<code>Vector</code>，除了<code>ArrayList</code>是线程不安全的（执行效率高），在多线程情况下，不建议使用<code>ArrayList</code><br>
+例如<code>add()</code>方法，并没有被<code>synchronized</code>修饰</li>
+</ol>
+<pre><code class="language-java">public boolean add(E e) {
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        elementData[size++] = e;
+        return true;
+}
+</code></pre>
+<h2 id="扩容机制">扩容机制</h2>
+<ol>
+<li><code>ArrayList</code>中维护了一个<code>Object</code>类型的数组<code>elementData</code>。<pre><code class="language-java">transient Object[] elementData;
+</code></pre>
+注意：<code>transient</code>： 使用 transient 关键字可以修饰成员变量，用于指示编译器不要将其序列化。当一个对象被序列化时，其所有非 transient 修饰的成员变量都会被写入到序列化流中，而 transient 修饰的成员变量则不会。通常情况下，对象的序列化和反序列化过程是通过 Java 的 <code>ObjectInputStream</code> 和 <code>ObjectOutputStream</code> 类来实现的。如果我们需要将一个对象序列化并写入磁盘或通过网络传输，但又不希望某些敏感数据（例如密码、密钥等）被序列化，那么我们可以将这些数据的成员变量加上 transient 关键字。<br>
+需要注意的是，transient 关键字只能修饰成员变量，不能用于修饰方法或类。同时，当一个类实现了 Serializable 接口时，该类中的所有 transient 成员变量都不会被序列化。</li>
+<li>一共有三个构造函数分别是<code>ArrayList()</code>、<code>ArrayList(int)</code>、<code>ArrayList(Collection&lt;? extend E&gt;)</code></li>
+<li>当创建ArrayList对象时，如果使用的是无参构造器，则初始<code>elementData</code>容量为0, 第1次添加，则扩容<code>elementData</code>为10,如需要再次扩容，则扩容<code>elementData</code>为1.5倍。</li>
+<li>如果使用的是指定大小的构造器，则初始<code>elementData</code>容量为指定大小， 如果需要扩容，则直接扩容<code>elementData</code>为1.5倍。</li>
+</ol>
+<h3 id="add方法需要进行扩容时的流程">add()方法需要进行扩容时的流程</h3>
+<pre><code class="language-java">public boolean add(E e) {
+    //确保 size+1 有空闲空间
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    elementData[size++] = e;
+    return true;
+}
+
+private void ensureCapacityInternal(int minCapacity) {
+    ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
+}
+
+private void ensureExplicitCapacity(int minCapacity) {
+    modCount++;
+
+    // overflow-conscious code
+    if (minCapacity - elementData.length &gt; 0)
+        grow(minCapacity);
+}
+
+//真正执行扩容的部分
+private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+</code></pre>
+<h1 id="vector底层结构和源码分析">Vector底层结构和源码分析</h1>
+<ol>
+<li>Vector类的定义说明<pre><code class="language-java">public class Vector&lt;E&gt;
+ extends AbstractList&lt;E&gt;
+ implements List&lt;E&gt;, RandomAccess, Cloneable, java.io.Serializable
+</code></pre>
+</li>
+<li>Vector底层也是对象数组<code>protected Obejct[] elementData</code></li>
+<li>Vector是线程同步的，即线程安全，Vector类的操作方法带有<strong>synchronized</strong><pre><code class="language-java">public synchronized E get(int index) {
+     if (index &gt;= elementCount)
+         throw new ArrayIndexOutOfBoundsException(index);
+
+     return elementData(index);
+ }
+</code></pre>
+</li>
+</ol>
+<h2 id="arraylist和vector的比较">ArrayList和Vector的比较</h2>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1680599258947.png" alt="" loading="lazy"></figure>
+<h1 id="linkedlist底层结构和源码分析">LinkedList底层结构和源码分析</h1>
+<ol>
+<li>LinkedList底层实现了双向链表和双端队列特点</li>
+<li>可以添加任意元素（元素可以重复），包括null</li>
+<li>线程不安全，没有实现同步</li>
+</ol>
+<h2 id="linkedlist的底层操作机制">LinkedList的底层操作机制</h2>
+<ol>
+<li>维护了一个双向链表</li>
+<li>维护了两个属性first和last分别指向首节点和尾节点</li>
+<li>每个节点（Node对象）里又维护了prev、next、item三个属性</li>
+<li>所以LinkedList的添加/删除不是通过数组完成的，效率更高<br>
+<img src="https://Yichongtian.github.io/post-images/1680600455259.png" alt="" loading="lazy"></li>
+</ol>
+<pre><code class="language-java">private static class Node&lt;E&gt; {
+    E item;
+    Node&lt;E&gt; next;
+    Node&lt;E&gt; prev;
+
+    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) {
+        this.item = element;
+        this.next = next;
+        this.prev = prev;
+    }
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/3sMdPvE3G/" class="tag">
+                    java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/qian-duan-css-xuan-ze-qi-de-lian-xi/">
+                  <h3 class="post-title">
+                    [前端]CSS选择器的练习
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]集合框架&lt;二&gt; | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="HashSet底层结构和源码分析
+先说总结
+
+HashSet底层机制说明
+HashSet底层是HashMap，HashMap底层是数组+链表和红黑树
+第一次添加时，table数组扩容到16，临界值（threshold）是16*加载因子（lo..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]集合框架&lt;二&gt;</h2>
+            <div class="post-date">2023-04-07</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="hashset底层结构和源码分析">HashSet底层结构和源码分析</h1>
+<h2 id="先说总结">先说总结</h2>
+<ul>
+<li>HashSet底层机制说明<br>
+HashSet底层是HashMap，HashMap底层是数组+链表和红黑树</li>
+<li>第一次添加时，table数组扩容到16，临界值（<code>threshold</code>）是16*加载因子（<code>loadFactor</code>）是0.75=12</li>
+<li>如果set集合中存储的元素量到了临界值12（做了12次成功的put/add操作），再往里添加，就会扩容到16 * 2=32，新的临界值就是32 * 0.75=24.以此类推</li>
+<li>在Java8中，如果一条链表的元素个数到达<code>TREEIFY_THRESHOLD</code>（默认是8），再往里添加时，并且table的大小&gt;=<code>MIN_TREEIFY_CAPACITY</code>（默认是64），就会进行树化（红黑树），否则仍然采用数组扩容机制</li>
+</ul>
+<h2 id="add新元素且不发生哈希碰撞操作的流程">add新元素且不发生哈希碰撞操作的流程：</h2>
+<ol>
+<li>添加一个元素时，先得到hash值，然后将Hash值转为索引值</li>
+<li>找到存储数据表table，看这个索引位置是否已经存放了元素</li>
+<li>如果没有，直接加入</li>
+<li>如果有，调用equals比较，如果相同，则放弃添加，如果不相同，则添加到最后</li>
+<li>在Java8中，如果一条链表的元素个数到达了<code>TREEIFY_THRESHOLD</code>（默认为8），并且table的大小&gt;=<code>MIN_TREEIFY_CAPACITY</code>（默认为64），就会进行数化成为红黑树<br>
+构造方法<br>
+HashSet的无参构造方法底层是直接调用HashMap的构造方法</li>
+</ol>
+<pre><code class="language-java">public HashSet() {
+    map = new HashMap&lt;&gt;();
+}
+</code></pre>
+<p>进入add方法，add方法调用map的put方法，但是参数多了一个<code>PRESENT</code>，这个<code>PRESENT</code>其实是HashSet中定义的一个属性，因为Map需要一个键值对，而我们传进来的只有一个对象，这个对象在HashSet中被当作是<code>Map&lt;K, V&gt;</code>中的K，V则用了这个叫做<code>PRESENT</code>的<code>Object</code>实例。<br>
+<code>private static final Object PRESENT = new Object();</code></p>
+<pre><code class="language-java">public boolean add(E e) {
+    return map.put(e, PRESENT)==null;
+}
+</code></pre>
+<p>add方法调用map的put方法,</p>
+<pre><code class="language-java">public V put(K key, V value) {
+    return putVal(hash(key), key, value, false, true);
+}
+</code></pre>
+<p>来看hash()是怎么算出hash值的：如果key是null，则返回0（解释了null为为什么在第一个位置），否则返回key的hashCode()方法返回值与该返回值无符号右移16位的结果做按位与运算的结果，将哈希值右移 16 位再与原来的哈希值进行异或运算，相当于把哈希值的高 16 位和低 16 位混合在一起，使得高位和低位的信息都参与了运算，从而使得哈希值更加均匀地分布在哈希表中，减小了哈希碰撞的概率。</p>
+<pre><code class="language-java">static final int hash(Object key) {
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);
+}
+</code></pre>
+<p>哈希值（处理过的哈希值）计算完之后，进入putVal方法</p>
+<pre><code class="language-java">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) {
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;//空table，执行resize()初始化
+    if ((p = tab[i = (n - 1) &amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);//该位置是空的，直接放
+    else {
+        Node&lt;K,V&gt; e; K k;
+        if (p.hash == hash &amp;&amp;
+            ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+            e = p;
+        else if (xxxx)
+            /**
+            *
+            */
+        else {
+            /**
+            *
+            */
+        }
+        if (e != null) { // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
+        }
+    }
+    ++modCount;
+    if (++size &gt; threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
+ }
+</code></pre>
+<p>第一个判定如果table为null，则调用<code>resize()</code>方法（<strong>重要：说明table是第一次put操作的时候新建的，而不是map/set被new出来的时候新建</strong>）<br>
+看看resize()方法做了什么：<br>
+当table为空，即第一次进入这个resize时，会执行如下语句，<code>DEFAULT_INITIAL_CAPACITY</code>为1&lt;&lt;4，为初始化大小16，<code>DEFAULT_LOAD_FACTOR</code>是负载因子默认为0.75，负载因子*默认大小=12，这个结果会被赋给<code>threshold</code>变量，意思是这个大小为16的table当负载达到12时就会进行下一次扩容（<code>HashMap</code>装得越满，读写性能越拉跨，所以要在接近装满的时候进行扩容）</p>
+<pre><code class="language-java">newCap = DEFAULT_INITIAL_CAPACITY;
+newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+</code></pre>
+<p>这之后就会执行</p>
+<pre><code class="language-java">Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])new Node[newCap];
+table = newTab;
+</code></pre>
+<p>这时table就完成赋值了<br>
+确定有了可以存放节点的table之后，就要new出一个存放本次数据的节点Node，根据hash计算出一个下标，然后判断这个下标是不是已经有数据了，如果没有，则直接调用<code>newNode</code>方法将返回的Node对象放进去<br>
+<strong>计算出的下标为空，直接放入</strong></p>
+<pre><code class="language-java">if ((p = tab[i = (n - 1) &amp; hash]) == null)
+    tab[i] = newNode(hash, key, value, null);
+</code></pre>
+<p>添加过后会判断一下现在的size是否大于临界值<code>threshold</code>，如果满足则进行一次扩容<code>resize()</code>，这里结束后还有一个方法的调用叫做<code>afterNodeInsertion(evict)</code>，<code>HashMap</code>中有好几个空方法，它们的作用是让<code>HashMap</code>的子类去实现的，比如<code>LinkedHashMap</code>重写<code>afterNodeInsertion(evict)</code>完成有序地添加元素。</p>
+<h2 id="add已存在元素元素的流程">add已存在元素元素的流程：</h2>
+<p>在<code>putVal</code>方法中，它不会进入<strong>计算出的下标为空，直接放入</strong>的分支，而是进入else中：<br>
+进入一个判断：<br>
+如果当前索引位置对应的链表的第一个元素和准备添加的key对象的hash值相同且满足下面两个条件之一：<br>
+（1）准备加入的key对象和p指向的Node节点的key对象是同一对象（p在上一个判断中被赋值为<code>table[计算出的下标]</code>）<br>
+（2）准备加入的key对象和p指向的Node节点 调用<code>equals</code>方法后返回true<br>
+满足则不能加入<code>e = p;</code></p>
+<pre><code class="language-java">if (p.hash == hash &amp;&amp;
+    ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+</code></pre>
+<p>不满足则说明加入的对象不重复，继续往下判断：<br>
+判断p是否为一个红黑树节点：</p>
+<pre><code class="language-java">else if (p instanceof TreeNode)
+</code></pre>
+<p>如果是红黑树节点，则调用红黑树的添加方法<code>putTreeVal</code>来进行添加</p>
+<pre><code class="language-java">e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+</code></pre>
+<p>如果不满足是红黑树节点，则说明没有树化，是个链表，从表头的下一个开始往后遍历链表，每遇到一个节点就用一次和上边比较相同的方法对比一次节点，但凡遇到一次比较结果为相同则直接退出循环，遍历到链表尾部时直接将这个node加在尾部并判断是否需要树化（<code>treeifyBin(tab, hash)</code>方法的内部还会进一步判断是否真的需要树化，还是<code>table.length()</code>&lt;64，只需要对table进行扩容,即*2）</p>
+<pre><code class="language-java">for (int binCount = 0; ; ++binCount) {
+    if ((e = p.next) == null) {
+        //到链表尾部了，直接添加
+        p.next = newNode(hash, key, value, null);
+        //判断是否达到8个节点，是否需要树化
+        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+            treeifyBin(tab, hash);
+        break;
+    }
+    if (e.hash == hash &amp;&amp;
+        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+        //遇到相同的节点，直接退出
+        break;
+    p = e;
+}
+</code></pre>
+<h1 id="linkedhashset底层结构和源码分析">LinkedHashSet底层结构和源码分析</h1>
+<p>##说明</p>
+<ol>
+<li>在LinkedHashSet中维护了一个hash表和双向链表（LinkedHashSet有head和tail）</li>
+<li>每个节点有pre和next属性，这样可以形成双向链表。</li>
+<li>再添加一个元素时，先求hash值，再求索引，确定该元素咋ihashtable的位置，然后将添加的元素加到双向链表（如果已经存在，则不添加（原则和hashset一样））<pre><code class="language-java">tail.next = newElement;
+newElement.pre = tail;
+tail = newElement;
+</code></pre>
+</li>
+</ol>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javarui-ji-wai-mai-xiang-mu-you-hua-du-xie-fen-chi/">
+                  <h3 class="post-title">
+                    [Java]瑞吉外卖-项目优化-读写分离
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

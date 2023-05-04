@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>linux常用命令 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="防火墙操作
+
+查看防火墙状态
+systemctl status firewalld.service
+or
+firewall-cmd --state
+暂时关闭防火墙（下次重启系统就会开启）
+systemctl stop firewalld.s..." />
+    <meta name="keywords" content="Linux" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">linux常用命令</h2>
+            <div class="post-date">2023-04-01</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="防火墙操作">防火墙操作</h2>
+<ul>
+<li>查看防火墙状态<br>
+<code>systemctl status firewalld.service</code><br>
+or<br>
+<code>firewall-cmd --state</code></li>
+<li>暂时关闭防火墙（下次重启系统就会开启）<br>
+<code>systemctl stop firewalld.service</code></li>
+<li>永久关闭防火墙<br>
+<code>systemctl disable firewalld.service</code></li>
+<li>开启防火墙<br>
+<code>systemctl start firewalld.service</code></li>
+<li>开放指定端口<br>
+例：开放运行mysql服务的3306端口：<br>
+<code>firewall-cmd --add-port=3306/tcp --permanent</code></li>
+<li>关闭指定关口<br>
+<code>firewall-cmd --remove-port=3306/tcp --permanent</code></li>
+<li>立即生效<br>
+<code>firewall-cmd --reload</code></li>
+<li>查看开放的端口<br>
+<code>firewall-cmd --zone=public --list-ports</code><br>
+<br/></li>
+</ul>
+<h2 id="配置java环境">配置JAVA环境</h2>
+<ol>
+<li>解压安装包<br>
+<code>tar -zxvf jdk-8u171-linux-x64.tar.gz -C /usr/local/</code></li>
+<li>配置环境变量<br>
+<code>vim /etc/profile</code><pre><code>JAVA_HOME=/usr/local/jdk1.8.0.171
+PATH=$JAVA_HOME/bin:$PATH
+</code></pre>
+</li>
+<li>重新加载profile文件<br>
+<code>source /etc/profile</code></li>
+<li>验证<br>
+<code>java -version</code><br>
+<br/></li>
+</ol>
+<h2 id="rpm">rpm</h2>
+<ol>
+<li>查询所有软件<br>
+<code>rpm -qa</code>一般配合管道操作<code> | grep whatDoYouWantToFind</code></li>
+<li>安装<br>
+<code>rpm -ivh xxxxx.rpm</code><br>
+<br/></li>
+</ol>
+<h2 id="使用yum安装lrzsz">使用yum安装lrzsz</h2>
+<p>lrzsz是linux系统中一个用于文件上传和下载的软件，将运行SSH软件的终端中的文件上传至linux系统中。<br>
+yum相比与rpm，yum可以自动处理依赖关系，一次性安装所有的依赖包</p>
+<ol>
+<li>先看看服务器上有没有lrzsz的安装包<pre><code class="language-shell">[root@localhost onion]# yum list lrzsz
+ Loaded plugins: fastestmirror, langpacks
+ Loading mirror speeds from cached hostfile
+ * base: mirrors.nju.edu.cn
+ * extras: mirrors.njupt.edu.cn
+ * updates: mirrors.nju.edu.cn
+ Installed Packages
+ lrzsz.x86_64          0.12.20-36.el7        @anaconda
+</code></pre>
+</li>
+<li>安装<br>
+<code>yum install lrzsz.x86_64</code><br>
+<br/><br/></li>
+</ol>
+<h1 id="项目部署">项目部署</h1>
+<p>安装git<br>
+<code>yum install git</code><br>
+克隆远程仓库<br>
+<code>git clone xxxxx.git</code><br>
+安装maven<br>
+<code>tar -zxvf apache-maven-3.5.4-bin.tar.gz -C /usr/local</code><br>
+配置maven环境变量<br>
+<code>vim /etc/profile</code></p>
+<pre><code>export MAVEN_HOME=/usr/local/apache-maven-3.5.4
+export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
+</code></pre>
+<p>重新加载<br>
+<code>source /etc/profile</code><br>
+验证<br>
+<code>mvn -version</code><br>
+修改配置文件<br>
+<code>vim /usr/pofile/apache-maven-3.5.4/conf/settings.xml</code><br>
+在setting节点添加:<br>
+<code>&lt;localRepository&gt;/usr/local/repo&lt;/localRepository&gt;</code></p>
+<h2 id="手动部署">手动部署</h2>
+<ol>
+<li>打包</li>
+<li>上传jar包至linux</li>
+<li>运行<br>
+nohup(no hang up)不挂起，用于不挂断地运行指定任务，退出终端不影响程序运行<br>
+<code>nohup java -jar projectname.jar &amp;&gt;hello.log &amp;</code><br>
+后台运行jar包，并将日志输出到hello.log文件</li>
+</ol>
+<h2 id="shell脚本部署">Shell脚本部署</h2>
+<p><strong>shell脚本编写</strong></p>
+<pre><code class="language-shell">echo =========================
+echo 部署脚本启动
+echo =========================
+
+echo 停止原来运行中的工程
+APP_NAME=helloworld
+
+tpid=`ps -ef | grep $APP_NAME | grep -v grep | grep -v kill | awk '{print $2}'`
+if [ ${tpid} ];then
+    echo 'Stop Process..'
+    kill -15 $tpid
+fi
+sleep 2
+tpid=`ps -ef | grep $APP_NAME | grep -v grep | grep -v kill | awk '{print $2}'`
+if [ ${tpid} ];then
+    echo 'Kill Process..'
+    kill -9 $tpid
+else
+    echo 'Stop Success!'
+fi
+
+echo 拉取最新代码
+cd /usr/local/helloworld
+git pull
+
+echo 打包
+output='mvn clean package -Dmaven.test.skip=true'
+
+cd target
+
+echo 启动
+nohuo java =jar helloworld-1.0-SNAPSHOT.jar &amp;&gt; helloworld.log &amp;
+echo 启动完成
+</code></pre>
+<p><strong>用户授权</strong><br>
+chmod(change mode) 命令是控制用户对文件的权限的命令</p>
+<ul>
+<li>Linux中的权限分为：<strong>读（r）、写（w）、执行（x）</strong></li>
+<li>Linux的文件调用权限分为三级：<strong>文件所有者（Owner）、用户组（Group）、其他用户（Other Users）</strong><br>
+只有文件的所有者和超级用户可以修改文件或目录的权限<br>
+要执行Shell脚本需要有对此脚本文件的执行权限，如果没有则不能执行<br>
+<img src="https://Yichongtian.github.io/post-images/1680403055287.png" alt="" loading="lazy"><br>
+chmod可以使用八进制数来指定权限<img src="https://Yichongtian.github.io/post-images/1680411095256.png" alt="" loading="lazy"><br>
+举例：</li>
+<li><code>chmod 777 helloworld.sh</code> 为所有用户授予读、写、执行权限</li>
+<li><code>chmod 755 helloworld.sh</code> 为文件拥有者授予读、写、执行权限，同组用户和其他用户授予读、执行权限</li>
+<li><code>chmod 210 helloworld.sh</code> 为文件拥有者授予写权限，同组用户授予执行权限，其他用户没有任何权限<br>
+<strong>设置静态IP</strong><br>
+先查看现有IP设置<br>
+<code>cat /etc/sysconfig/network-scripts/ifcfg-ens33</code>，注意，这里的ifcfg-ens33根据使用linux系统的不同，文件名也会不同</li>
+</ul>
+<pre><code class="language-java">TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=dhcp
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=ens33
+UUID=6e26179a-e4e4-4c7d-a715-2a152fa08cab
+DEVICE=ens33
+ONBOOT=yes
+</code></pre>
+<p>可以看到这里的BOOTPROTP节点使用的是DHCP服务器动态分配IP，接下来应该改为static</p>
+<pre><code class="language-java">BOOTPROTO=static
+IPADDR=&quot;192.168.179.100&quot;    #注意这里的网段要与虚拟机网络编辑器里的子网IP相同
+NETMASK=&quot;255.255.255.0&quot;
+GATEWAY=&quot;192.168.179.2&quot;
+DNS1=&quot;192.168.179.2&quot;
+</code></pre>
+<p>重启网络服务<br>
+<code>systemctl restart network</code><br>
+<br/><br>
+<strong>直接执行shell脚本即可完成部署<br>
+代码更新后也是直接执行shell脚本</strong></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/2OSbcfaWy/" class="tag">
+                    Linux
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javaji-he-kuang-jia/">
+                  <h3 class="post-title">
+                    [Java]集合框架&lt;一&gt;
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

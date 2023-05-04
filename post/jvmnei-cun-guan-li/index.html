@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[JVM]内存管理 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="内存区域划分
+
+大致划分
+程序计数器
+占用很小一部分，可以看作是当前线程所执行的字节码的行号指示器。每个线程都有一个独立的程序计数器。其生命周期与该程序计数器所属线程的生命周期相同
+虚拟机栈
+虚拟机栈用来保存每个方法的栈帧（栈帧由局部变量表..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[JVM]内存管理</h2>
+            <div class="post-date">2023-05-02</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="内存区域划分">内存区域划分</h1>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1683034516952.jpg" alt="" loading="lazy"></figure>
+<h2 id="大致划分">大致划分</h2>
+<h3 id="程序计数器">程序计数器</h3>
+<p>占用很小一部分，可以看作是当前线程所执行的字节码的行号指示器。每个线程都有一个独立的程序计数器。其生命周期与该程序计数器所属线程的生命周期相同</p>
+<h3 id="虚拟机栈">虚拟机栈</h3>
+<p>虚拟机栈用来保存每个方法的栈帧（栈帧由局部变量表、操作数栈、动态链接、返回地址和一些附加信息构成）<br>
+模拟一下虚拟机栈的运作流程：</p>
+<pre><code class="language-java">public class Main {
+    public static void main(String[] args) {
+        int res = a();
+        System.out.println(res);
+    }
+
+    public static int a(){
+        return b();
+    }
+
+    public static int b(){
+        return c();
+    }
+
+    public static int c(){
+        int a = 10;
+        int b = 20;
+        return a + b;
+    }
+}
+</code></pre>
+<p><img src="https://Yichongtian.github.io/post-images/1683035594850.png" alt="" loading="lazy"><br>
+在main方法中，需要调用方法a()，这时当前方法就不会继续向下运行了，而是去执行方法a()，那么同样的，将此方法也入栈，注意是放入到栈顶位置，main方法的栈帧会被压下去：<br>
+<img src="https://Yichongtian.github.io/post-images/1683035600347.png" alt="" loading="lazy"><br>
+这时，进入方法a之后，又继而进入到方法b，最后在进入c，因此，到达方法c的时候，我们的虚拟机栈变成了：<br>
+<img src="https://Yichongtian.github.io/post-images/1683035604797.png" alt="" loading="lazy"><br>
+现在我们依次执行方法c中的指令，最后返回a+b的结果，在方法c返回之后，也就代表方法c已经执行结束了，栈帧4会自动出栈，这时栈帧3就得到了上一栈帧返回的结果，并继续执行，但是由于紧接着马上就返回，所以继续重复栈帧4的操作，此时栈帧3也出栈并继续将结果交给下一个栈帧2，最后栈帧2再将结果返回给栈帧1，然后栈帧1就可以继续向下运行了，最后输出结果。<br>
+<img src="https://Yichongtian.github.io/post-images/1683035679207.png" alt="" loading="lazy"></p>
+<h3 id="本地方法栈">本地方法栈</h3>
+<p>本地方法栈与虚拟机栈作用差不多，但是它是为本地方法准备的。</p>
+<h3 id="堆">堆</h3>
+<p>堆是整个Java应用程序共享的区域，也是整个虚拟机最大的一块内存空间，作用是存放和管理对象和数组，垃圾回收主要就是在对堆进行操作</p>
+<h3 id="方法区">方法区</h3>
+<p>Java程序共享，存储所有类信息、常量、静态变量等，方法区由<code>类信息表</code>和<code>运行时常量池</code>构成<br>
+<img src="https://Yichongtian.github.io/post-images/1683036038100.png" alt="" loading="lazy"></p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/mysqljin-jie-4innodb-yin-qing/">
+                  <h3 class="post-title">
+                    [MySQL]进阶4（InnoDB引擎）
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]瑞吉外卖-项目优化-读写分离 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Mysql主从复制
+
+介绍
+
+MySQL主从复制是一个异步的复制过程，底层是基于Mysq1数据库自带的二进制日志功能。就是一台或多台MySQL数据库(slave, 即从库)从另一台MySQL数据库(master, 即主库)进行日志的复制然后..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]瑞吉外卖-项目优化-读写分离</h2>
+            <div class="post-date">2023-04-06</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="mysql主从复制">Mysql主从复制</h1>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1680748528236.png" alt="" loading="lazy"></figure>
+<h2 id="介绍">介绍</h2>
+<blockquote>
+<p>MySQL主从复制是一个异步的复制过程，底层是基于Mysq1数据库自带的二进制日志功能。就是一台或多台MySQL数据库(slave, 即从库)从另一台MySQL数据库(master, 即主库)进行日志的复制然后再解析日志并应用到自身，最终实现从库的数据和主库的数据保持一致。 MySQL主 从复制是MySQL数据库自带功能，无需借助第三方工具。</p>
+</blockquote>
+<h3 id="mysql复制过程分为3步">MySQL复制过程分为3步</h3>
+<ol>
+<li>master将改变记录到二进制日志（binary log）</li>
+<li>slave将master的binary log拷贝到它的中继日志（relay log）</li>
+<li>slave重做中继日志中的时间，将改变应用到自己的数据库中<br>
+<img src="https://Yichongtian.github.io/post-images/1680748928303.png" alt="" loading="lazy"></li>
+</ol>
+<h2 id="配置">配置</h2>
+<p>这里我选择再安装一台新的虚拟机从0开始配置环境来实现slave库。</p>
+<ol>
+<li>设置网卡:<br>
+<code>cd /etc/sysconfig/network-scripts/</code><br>
+修改该目录下的ifcfg-ens33文件:<br>
+<code>vi ifcfg-ens33</code><br>
+将最后一项：ONBOOT改为yes后重启虚拟机<br>
+设置静态ip：<br>
+同样是修改上面的文件:<pre><code class="language-cnf">BOOTPROTO=static
+IPADDR=&quot;192.168.179.101&quot;
+NETMASK=&quot;255.255.255.0&quot;
+GATEWAY=&quot;192.168.179.2&quot;
+DNS1=&quot;192.168.179.2&quot;
+</code></pre>
+<blockquote>
+<p>注意，网段要与虚拟机设置里的一致<br>
+<img src="https://Yichongtian.github.io/post-images/1680850814321.png" alt="" loading="lazy"><br>
+重启设置:<br>
+<code>systemctl restart network</code></p>
+</blockquote>
+</li>
+<li>安装Mysql
+<ul>
+<li>卸载mariadb</li>
+</ul>
+<pre><code class="language-linux">[root@localhost ~]# rpm -qa | grep mariadb
+ mariadb-libs-5.5.68-1.el7.x86_64
+ [root@localhost ~]# rpm -e --nodeps mariadb-libs-5.5.68-1.el7.x86_64
+</code></pre>
+<ul>
+<li>将mysql安装包放到<code>/usr/local/mysql</code>下并解压<br>
+<code>tar -zxvf mysql-5.7.25-1.el7.x86_64.rpm-bundle.tar.gz</code></li>
+<li>按照顺序安装解压出来的6个rpm包<br>
+<code>rpm -ivh mysql-community-common-5.7.25-1.el7.x86_64.rpm</code><br>
+<code>rpm -ivh mysql-community-libs-5.7.25-1.el7.x86_64.rpm</code><br>
+<code>rpm -ivh mysql-community-devel-5.7.25-1.el7.x86_64.rpm</code><br>
+<code>rpm -ivh mysql-community-libs-compat-5.7.25-1.el7.x86_64.rpm</code><br>
+<code>rpm -ivh mysql-community-client-5.7.25-1.el7.x86_64.rpm</code><br>
+<code>yum install net-tools</code><br>
+<code>yum install -y perl-Module-Install.noarch</code><br>
+<code>rpm -ivh mysql-community-server-5.7.25-1.el7.x86_64.rpm</code></li>
+</ul>
+</li>
+<li>启动Mysql<br>
+<code>systemctl start mysqld</code><br>
+开机自启<br>
+<code>systemctl enable mysqld</code><br>
+登录Mysql数据库，查阅临时密码<br>
+<code>cat /var/log/mysqld.log | grep password</code><br>
+<code>2023-04-07T07:26:22.957473Z 1 [Note] A temporary password is generated for root@localhost: #iP&gt;ahqGC1qg</code><br>
+使用临时密码登录mysql<br>
+<code>mysql -uroot -p</code><br>
+修改密码：<br>
+<code>set global validate_password_length=4</code><br>
+<code>set global validate_password_policy=LOW;</code><br>
+<code>set password=password('root');</code><br>
+开启访问权限<br>
+<code>grant all on *.* to 'root'@'%' identified by 'root';</code><br>
+刷新<br>
+<code>flush privileges;</code><br>
+打开对应端口<br>
+<code>firewall-cmd --add-port=3306/tcp --permanent</code><br>
+<code>firewall-cmd --reload</code>
+<blockquote>
+<h2 id="哎我nm真服了第二个虚拟机的ip改为静态的之后第一台虚拟机连不上网了chatgpt告诉我说是两台虚拟机的网卡名称是一样的导致的然而经历了更改网卡设备名-修改mac地址后还是连不上网搁置一下">哎我nm真服了，第二个虚拟机的ip改为静态的之后第一台虚拟机连不上网了，ChatGPT告诉我说是两台虚拟机的网卡名称是一样的导致的，然而经历了更改网卡设备名、修改mac地址后，还是连不上网，搁置一下。</h2>
+</blockquote>
+</li>
+</ol>
+<h2 id="测试">测试</h2>
+<h1 id="项目实现读写分离">项目实现读写分离</h1>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javarui-ji-wai-mai-xiang-mu-you-hua-huan-cun/">
+                  <h3 class="post-title">
+                    [Java]瑞吉外卖-项目优化-缓存
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

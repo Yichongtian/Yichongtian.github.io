@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[面经]im the jumpmaster，duo~ | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="@Resource和@Autowired的区别
+@Autowird为Spring提供的注解，默认装配规则为根据类型byType（如果要根据名称装配，需要配合@Qualifier）
+@Resource是JDK扩展包中的，属于JDK的一部分，更..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[面经]im the jumpmaster，duo~</h2>
+            <div class="post-date">2023-04-26</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="resource和autowired的区别"><code>@Resource</code>和<code>@Autowired</code>的区别</h2>
+<p><code>@Autowird</code>为Spring提供的注解，默认装配规则为根据类型<code>byType</code>（如果要根据名称装配，需要配合@Qualifier）<br>
+<code>@Resource</code>是JDK扩展包中的，属于JDK的一部分，更具有通用性，默认装配规则为根据名字<code>byName</code>，通过name找不到的时候才会根据类型装配</p>
+<p><code>@Autowired</code>注解用在<code>属性</code>上、<code>setter方法</code>上、<code>构造方法</code>上、<code>构造方法参数</code>上，而<br>
+<code>@Resource</code>注解用在<code>属性</code>上、<code>setter方法</code>上</p>
+<hr/>
+<h2 id="bean的作用域和生命周期"><code>bean</code>的作用域和生命周期</h2>
+<p><strong>作用域</strong></p>
+<p>在Spring中可以通过配置bean标签的scope属性来指定bean的作用域范围，各取值含义参加下表：</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>含义</th>
+<th>创建对象的时机</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>singleton（默认）</td>
+<td>在IOC容器中，这个bean的对象始终为单实例</td>
+<td>IOC容器初始化时</td>
+</tr>
+<tr>
+<td>prototype</td>
+<td>这个bean在IOC容器中有多个实例</td>
+<td>获取bean时</td>
+</tr>
+</tbody>
+</table>
+<p>如果是在WebApplicationContext环境下还会有另外几个作用域（但不常用）：</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>request</td>
+<td>在一个请求范围内有效</td>
+</tr>
+<tr>
+<td>session</td>
+<td>在一个会话范围内有效</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-xml">&lt;!-- scope属性：取值singleton（默认值），bean在IOC容器中只有一个实例，IOC容器初始化时创建对象 --&gt;
+&lt;!-- scope属性：取值prototype，bean在IOC容器中可以有多个实例，getBean()时创建对象 --&gt;
+&lt;bean class=&quot;com.atguigu.spring6.bean.User&quot; scope=&quot;prototype&quot;&gt;&lt;/bean&gt;
+</code></pre>
+<p><strong>生命周期</strong></p>
+<ul>
+<li>bean对象创建（调用无参构造器）</li>
+<li>给bean对象设置属性</li>
+<li>bean的后置处理器（初始化之前）</li>
+<li>bean对象初始化（需在配置bean时指定初始化方法）</li>
+<li>bean的后置处理器（初始化之后）</li>
+<li>bean对象就绪可以使用</li>
+<li>bean对象销毁（需在配置bean时指定销毁方法）</li>
+<li>IOC容器关闭</li>
+</ul>
+<hr/>
+<h2 id="数据库索引的原理创建索引的缺点是什么什么情况下索引失效优化数据库的方法">数据库索引的原理？创建索引的缺点是什么？什么情况下索引失效？优化数据库的方法？</h2>
+<p><strong>关键点：</strong></p>
+<ol>
+<li>哪种数据库（其实关系型数据库都差不多）</li>
+<li>以MySQL为例的b+树</li>
+<li>索引好处和代价</li>
+<li>索引失效情况</li>
+<li>优化
+<ol>
+<li>硬件层面</li>
+<li>软件层面<br>
+答：</li>
+</ol>
+</li>
+</ol>
+<h3 id="原理">原理</h3>
+<ol>
+<li>MySQL默认引擎InnoDB使用b+树实现索引，在索引查找时时间复杂度为log(n)</li>
+<li>索引又分为聚簇索引和非聚簇索引，聚簇索引是建表的时候引擎自动创建的，记录了主键id和完整的一行数据，非聚簇索引由用户自行创建，记录的数据是用户自行决定的字段以及该字段对应的主键，如果需要完整的数据需要用这个主键去聚簇索引中再次查找完整的记录，这个过程叫回表查询</li>
+<li>索引的叶子节点以链表的形式存储，方便顺序查找和排序</li>
+</ol>
+<h3 id="代价">代价</h3>
+<ol>
+<li>占用空间（空间换时间，存储在磁盘，缓存在内存）</li>
+<li>对建立了索引的表进行更新时会级联更新索引</li>
+<li>高并发写影响性能</li>
+</ol>
+<h3 id="索引失效的情况">索引失效的情况</h3>
+<ol>
+<li>计算、函数</li>
+<li>LIKE以%开头</li>
+<li>不等于（!= 或 &lt;&gt;）</li>
+<li>is not null可能失效</li>
+<li>类型转换</li>
+<li>数据库优化器觉得不使用索引会更快的时候</li>
+</ol>
+<h3 id="优化数据库的方法">优化数据库的方法</h3>
+<ol>
+<li>表结构设计优化，尽可能减少跨表查询，可以添加冗余字段，控制容量</li>
+<li>sql优化，覆盖索引，select * -&gt;select字段，where条件尽可能精准，等值匹配放在前面，范围匹配放在后面，使用order by的时候最好按照最左前缀法则建立索引</li>
+<li>减少函数的使用</li>
+</ol>
+<hr/>
+<h2 id="什么是spring依赖注入有哪些方法">什么是Spring依赖注入，有哪些方法</h2>
+<p>依赖注入是指将要用到的对象实例交给Spring的IoC容器帮我们管理，方法：set方法注入，构造方法注入，autowird注入（默认ByType，可以改为ByName）</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/mysqljin-jie-3suo/">
+                  <h3 class="post-title">
+                    [MySQL]进阶3（锁）
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

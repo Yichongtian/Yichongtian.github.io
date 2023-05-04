@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]瑞吉外卖-项目优化-缓存 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="环境搭建
+maven坐标
+在项目的pom.xml中导入spring data redis的maven坐标
+&lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&..." />
+    <meta name="keywords" content="java" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]瑞吉外卖-项目优化-缓存</h2>
+            <div class="post-date">2023-04-04</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="环境搭建">环境搭建</h1>
+<h2 id="maven坐标">maven坐标</h2>
+<p>在项目的pom.xml中导入spring data redis的maven坐标</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h2 id="配置文件">配置文件</h2>
+<p>在项目的application.yml中加入redis相关配置</p>
+<pre><code class="language-yml">spring:
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+</code></pre>
+<h2 id="配置类redisconfig">配置类RedisConfig</h2>
+<pre><code class="language-Java">@Configuration
+public class RedisConfig extends CachingConfigurerSupport {
+
+    @Bean
+    public RedisTemplate&lt;Object, Object&gt; redisTemplate(RedisConnectionFactory connectionFactory){
+        RedisTemplate&lt;Object, Object&gt; redisTemplate = new RedisTemplate&lt;&gt;();
+        //默认的Key序列化器：JdkSerializationRedisSerializer
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(connectionFactory);
+
+        return redisTemplate;
+    }
+}
+</code></pre>
+<h1 id="缓存短信验证码">缓存短信验证码</h1>
+<h2 id="实现思路">实现思路</h2>
+<p>前面我们已经实现了移动端手机验证码登录,随机生成的验证码我们是保存在HttpSession中的。<br>
+现在需要改造为将验证码缓存在Redis中，具体的实现思路如下:</p>
+<ol>
+<li>在服务端UserController中注入RedisTemplate对象，用于操作Redis</li>
+<li>在服务端UserController的sendMsg方法中，将随机生成的验证码缓存到Redis中，并设置有效期为5分钟</li>
+<li>在服务端UserController的login方法中，从Redis中 获取缓存的验证码，如果登录成功则Redis中的验证码</li>
+</ol>
+<h2 id="代码改造">代码改造</h2>
+<ol>
+<li>
+<pre><code class="language-java">@Resource
+ private RedisTemplate redisTemplate;
+</code></pre>
+</li>
+<li>
+<pre><code class="language-java">//保存验证码到Redis，有效时间5分钟
+redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+</code></pre>
+</li>
+<li>
+<pre><code class="language-java">//用户登陆成功，删除验证码缓存
+ redisTemplate.delete(phone);
+</code></pre>
+</li>
+</ol>
+<h2 id="功能测试">功能测试</h2>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1680671345813.png" alt="" loading="lazy"></figure>
+<h1 id="缓存菜品数据">缓存菜品数据</h1>
+<h2 id="实现思路-2">实现思路</h2>
+<p>前面已经实现了移动端菜品查看功能，对应的服务端方法为<code>DishController</code>的<code>list</code>方法，此方法会根据前端提交的查询条件进行数据库查询操作。在高并发的情况下，频繁查询数据库会导致系统性能下降，服务端响应时间增长。现在需要对此方法进行缓存优化，提高系统的性能。<br>
+具体的实现思路如下:</p>
+<ol>
+<li>改造<code>DishController</code>的list方法, 先从Redis中获取菜品数据，如果有则直接返回，无需查询数据库;如果没有则查询数据库，并将查询到的菜品数据放入Redis。</li>
+<li>改造<code>DishController</code>的<code>save</code>和<code>update</code>方法， 加入清理缓存的逻辑</li>
+</ol>
+<h2 id="代码改造-2">代码改造</h2>
+<pre><code class="language-java">@GetMapping(&quot;/list&quot;)
+public R&lt;List&lt;DishDto&gt;&gt; list(Dish dish){
+    //动态构造key
+    String key = &quot;dish_&quot;+dish.getCategoryId()+&quot;_&quot;+dish.getStatus();
+    List&lt;DishDto&gt; dishDtoList = null;
+    dishDtoList = (List&lt;DishDto&gt;)redisTemplate.opsForValue().get(key);
+    if(dishDtoList != null){
+        //如果存在，直接返回，不用查润mysql
+        return R.success(dishDtoList);
+    }
+    //查询
+    //LambdaQueryWrapper&lt;Dish&gt; queryWrapper = new LambdaQueryWrapper&lt;&gt;();
+    //...
+    //...
+    //查询结束后存入redis
+    redisTemplate.opsForValue().set(key, dishDtoList);
+    return R.success(dishDtoList);
+}
+</code></pre>
+<h2 id="注意事项">注意事项</h2>
+<p>在使用缓存过程中，要注意保证数据库中的数据和缓存中的数据一致,如果数据库中的数据发生变化，需要及时清理缓存数据。</p>
+<pre><code class="language-java"> String key = &quot;dish_&quot;+dishDto.getCategoryId()+&quot;_&quot;+dishDto.getStatus();
+ redisTemplate.delete(key);
+</code></pre>
+<h1 id="spring-cache">Spring Cache</h1>
+<h2 id="spring-cache介绍">Spring Cache介绍</h2>
+<blockquote>
+<p>Spring Cache是一个框架，实现了基于注解的缓存功能，只需要简单地加一个注解，就能实现缓存功能。Spring Cache提供了一层抽象，底层可以切换不同的cache实现。具体就是通过CacheManager接口来统一-不同 的缓存技术。<br>
+CacheManager是Spring提供的各种缓存技术抽象接口。<br>
+针对不同的缓存技术需要实现不同的CacheManager:<br>
+<img src="https://Yichongtian.github.io/post-images/1680682714206.png" alt="" loading="lazy"></p>
+</blockquote>
+<h2 id="spring-cache常用注解">Spring Cache常用注解</h2>
+<p><img src="https://Yichongtian.github.io/post-images/1680683214546.png" alt="" loading="lazy"><br>
+在spring boot项目中，使用缓存技术只需在项目中导入相关缓存技术的依赖包，并在启动类上使用<code>@EnableCaching</code>开启缓存支持即可。<br>
+例如，使用Redis作为缓存技术，只需要导入Spring data Redis的maven坐标即可。</p>
+<h2 id="spring-cache使用方式">Spring Cache使用方式</h2>
+<p>在Spring Boot项目中使用Spring Cache的操作步骤(使用redis缓存技术):</p>
+<ol>
+<li>导入maven坐标<br>
+spring-boot-starter-data-redis、spring-boot-starter-cache</li>
+<li>配置<code>application.yml</code></li>
+<li>在启动类.上加入<code>@EnableCaching</code>注解,开启缓存注解功能</li>
+<li>在Controller的方法上加入<code>@Cacheable</code>、<code>@CacheEvict</code>等注解， 进行缓存操作</li>
+</ol>
+<h1 id="缓存套餐数据">缓存套餐数据</h1>
+<h2 id="实现思路-3">实现思路</h2>
+<p>前面已经实现了移动端套餐查看功能，对应的服务端方法为<code>SetmealController</code>的<code>list</code>方法，此方法会根据前端提交的查询条件进行数据库查询操作。在高并发的情况下，频繁查询数据库会导致系统性能下降，服务端响应时间增长。<br>
+现在需要对此方法进行缓存优化，提高系统的性能。<br>
+具体的实现思路如下:<br>
+1、导入Spring Cache和Redis相关maven坐标<br>
+2、在<code>application.yml</code>中配置缓存数据的过期时间<br>
+3、在启动类上加入<code>@EnableCaching</code>注解，开启缓存注解功能<br>
+4、在<code>SetmealController</code>的<code>list</code>方 法上加入<code>@Cacheable</code>注解<br>
+5、在<code>SetmealController</code>的<code>save</code>和<code>delete</code>方法. 上加入<code>CacheEvict</code>注解</p>
+<h2 id="代码改造-3">代码改造</h2>
+<p>1.maven坐标</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-cache&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<ol start="2">
+<li>配置缓存数据过期时间（非必要）</li>
+</ol>
+<pre><code class="language-yml">spring:
+  cache:
+    redis:
+      time-to-live: 1800000
+</code></pre>
+<ol start="3">
+<li>在启动类加上<code>@EnableCaching //开启缓存注解</code></li>
+<li>修改list，加上注解<pre><code>@Cacheable(value = &quot;setmealCache&quot;, key = &quot;#setmeal.categoryId + '_' + #setmeal.status&quot;)
+</code></pre>
+这里修改完后测试会出现如下报错信息：<br>
+<code>java.lang.IllegalArgumentException: DefaultSerializer requires a Serializable payload but received an object of type [com.shou.reggie.common.R]</code>原因是list方法的返回的对象R没有实现序列化接口，在<code>@Cacheable</code>加入缓存无法将数据序列化，所以要先改造R类为：<br>
+<code>public class R&lt;T&gt; implements Serializable</code></li>
+<li>修改save和delete<br>
+方法加上注解<code>@CacheEvict(value = &quot;setmealCache&quot;, allEntries = true)</code>即可</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/3sMdPvE3G/" class="tag">
+                    java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/redis0x03zai-java-zhong-cao-zuo-redis/">
+                  <h3 class="post-title">
+                    [Redis]0x02.在Java中操作Redis
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

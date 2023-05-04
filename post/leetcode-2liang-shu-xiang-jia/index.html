@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>leetcode 2.两数相加 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
+请你将两个数相加，并以相同形式返回一个表示和的链表。
+你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+
+示..." />
+    <meta name="keywords" content="力扣" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">leetcode 2.两数相加</h2>
+            <div class="post-date">2023-04-12</div>
+            
+            <div class="post-content" v-pre>
+              <p>给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。<br>
+请你将两个数相加，并以相同形式返回一个表示和的链表。<br>
+你可以假设除了数字 0 之外，这两个数都不会以 0 开头。<br>
+<img src="https://Yichongtian.github.io/post-images/1681287597875.png" alt="" loading="lazy"><br>
+示例1：</p>
+<pre><code class="language-java">输入：l1 = [2,4,3], l2 = [5,6,4]
+输出：[7,0,8]
+解释：342 + 465 = 807.
+</code></pre>
+<p>示例2：</p>
+<pre><code class="language-java">输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+输出：[8,9,9,9,0,0,0,1]
+</code></pre>
+<p>解答：<br>
+先定义一个前导节点pre，用来返回的头节点head，进位up，过程分三个部分：</p>
+<ol>
+<li>两个链表目前都不为空：创建新节点并赋值，计算进位</li>
+<li>l1为空，l2不为空，创建新节点并赋值，计算进位</li>
+<li>l2为空，l1不为空，创建新节点并赋值，计算进位<br>
+创建第一个点的时候pre为null，即该节点不应该有前一个节点，所以直接pre = cur，后续要将pre节点指向当前节点cur<br>
+注意最后如果还有进位要再新建一个节点。</li>
+</ol>
+<pre><code class="language-java">/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode pre = null, head = null;
+        int up = 0;
+        while(l1 != null &amp;&amp; l2 != null){
+            ListNode cur = new ListNode();
+            cur.val = (l1.val + l2.val + up)%10;
+            up = (l1.val + l2.val + up)/10;
+            cur.next = null;
+            if(pre != null){
+                pre.next = cur;
+            }else{
+                head = cur;
+            }
+            pre = cur;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        while(l1 == null &amp;&amp; l2 != null){
+            ListNode cur = new ListNode();
+            cur.val = (l2.val + up)%10;
+            up = (l2.val + up)/10;
+            if(pre != null){
+                pre.next = cur;
+            }else{
+                head = cur;
+            }
+            pre = cur;
+            l2 = l2.next;
+        }
+        while(l2 == null &amp;&amp; l1 != null){
+            ListNode cur = new ListNode();
+            cur.val = (l1.val + up)%10;
+            up = (l1.val + up)/10;
+            if(pre != null){
+                pre.next = cur;
+            }else{
+                head = cur;
+            }
+            pre = cur;
+            l1 = l1.next;
+        }
+        if(up == 1){
+            ListNode cur = new ListNode(1, null);
+            pre.next = cur;
+        }
+        return head;
+    }
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/PFG1KuN_N/" class="tag">
+                    力扣
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/leetcode-206fan-zhuan-lian-biao/">
+                  <h3 class="post-title">
+                    leetcode 206.反转链表
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

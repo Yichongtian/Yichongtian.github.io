@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]复习一下反射 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="自定义类
+package com.shou.reflect;
+
+public class Car {
+
+    //属性
+    private String name;
+    private int age;
+    private S..." />
+    <meta name="keywords" content="java" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]复习一下反射</h2>
+            <div class="post-date">2023-04-26</div>
+            
+            <div class="post-content" v-pre>
+              <p><strong>自定义类</strong></p>
+<pre><code class="language-java">package com.shou.reflect;
+
+public class Car {
+
+    //属性
+    private String name;
+    private int age;
+    private String color;
+
+    //无参数构造
+    public Car() {
+    }
+
+    //有参数构造
+    public Car(String name, int age, String color) {
+        this.name = name;
+        this.age = age;
+        this.color = color;
+    }
+
+    //普通方法
+    private void run() {
+        System.out.println(&quot;私有方法-run.....&quot;);
+    }
+
+    //get和set方法
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public String getColor() {
+        return color;
+    }
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return &quot;Car{&quot; +
+                &quot;name='&quot; + name + '\'' +
+                &quot;, age=&quot; + age +
+                &quot;, color='&quot; + color + '\'' +
+                '}';
+    }
+}
+</code></pre>
+<h2 id="1-获取class对象多种方式">1. 获取Class对象多种方式</h2>
+<pre><code class="language-java">@Test
+public void test01() throws Exception {
+    //1 类名.class
+    Class&lt;Car&gt; clazz1 = Car.class;
+
+    //2 对象.getClass()
+    Class&lt;? extends Car&gt; clazz2 = new Car().getClass();
+
+    //3 Class.forName(&quot;全路径&quot;)
+    Class&lt;?&gt; clazz3 = Class.forName(&quot;com.shou.bean.Car&quot;);
+
+    //实例化
+    Car car = (Car)clazz3.getDeclaredConstructor().newInstance();
+    System.out.println(car);
+}
+</code></pre>
+<h2 id="2-获取构造方法">2. 获取构造方法</h2>
+<pre><code class="language-java">@Test
+public void test02() throws Exception{
+    Class&lt;Car&gt; clazz = Car.class;
+    //getConstructors()获取所有public的构造方法
+    //getDeclaredConstructors()获取所有的构造方法
+    Constructor&lt;?&gt;[] declaredConstructors = clazz.getDeclaredConstructors();
+    for (Constructor&lt;?&gt; c : declaredConstructors) {
+        System.out.println(c.getName()+&quot; 方法参数个数: &quot;+c.getParameterCount());
+    }
+
+    //调用public
+    Constructor&lt;Car&gt; c1 = clazz.getDeclaredConstructor(String.class, int.class, String.class);
+    Car car1 = c1.newInstance(&quot;Benz&quot;, 5, &quot;香槟色&quot;);
+    System.out.println(car1);
+
+    //调用private
+    Constructor&lt;Car&gt; c2 = clazz.getDeclaredConstructor(String.class, int.class, String.class);
+    c2.setAccessible(true);
+    Car car2 = c2.newInstance(&quot;BMW&quot;, 6, &quot;黑色&quot;);
+    System.out.println(car2);
+}
+</code></pre>
+<h2 id="3-获取属性">3. 获取属性</h2>
+<pre><code class="language-java">@Test
+public void test03() throws Exception{
+    Class&lt;Car&gt; clazz = Car.class;
+    Car car = clazz.getDeclaredConstructor().newInstance();
+    //获取所有public属性
+    Field[] fields1 = clazz.getFields();
+    //获得所有属性（包含private）
+    Field[] fields2 = clazz.getDeclaredFields();
+
+    //给私有属性赋值
+    for (Field field : fields2) {
+        System.out.println(field.getType() + &quot; &quot; + field.getName());
+        if( &quot;name&quot;.equals(field.getName()) ){
+            field.setAccessible(true);
+            field.set(car, &quot;比亚迪&quot;);
+        }
+    }
+    System.out.println(car);
+}
+</code></pre>
+<h2 id="4-获取方法">4. 获取方法</h2>
+<pre><code class="language-java">@Test
+public void test04() throws Exception{
+    Car car = new Car(&quot;Tesla&quot;, 3, &quot;祖母绿&quot;);
+    Class&lt;? extends Car&gt; clazz = car.getClass();
+
+    //获取所有方法
+    Method[] methods = clazz.getMethods();
+    for (Method method : methods) {
+        if(&quot;toString&quot;.equals(method.getName())){
+            String invoke = (String)method.invoke(car);
+            System.out.println(&quot;执行toString方法： &quot; + invoke);
+        }
+    }
+
+    //获取我想要的私有方法
+    Method[] declaredMethod = clazz.getDeclaredMethods();
+    for (Method method : declaredMethod) {
+        if(&quot;run&quot;.equals(method.getName())){
+            method.setAccessible(true);
+            method.invoke(car);
+        }
+    }
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/3sMdPvE3G/" class="tag">
+                    java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javashou-xie-ioc/">
+                  <h3 class="post-title">
+                    [Java]手写IoC
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

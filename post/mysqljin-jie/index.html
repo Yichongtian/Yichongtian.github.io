@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[MySQL]进阶1（简介、索引） | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="存储引擎
+MySQL体系结构
+
+存储引擎简介
+存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型。
+
+在创建表时，指定存储引擎CREATE TABLE table..." />
+    <meta name="keywords" content="数据库,MySQL" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[MySQL]进阶1（简介、索引）</h2>
+            <div class="post-date">2023-04-15</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="存储引擎">存储引擎</h1>
+<h2 id="mysql体系结构">MySQL体系结构</h2>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1681564335830.png" alt="" loading="lazy"></figure>
+<h2 id="存储引擎简介">存储引擎简介</h2>
+<p>存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型。</p>
+<ol>
+<li>在创建表时，指定存储引擎<pre><code class="language-sql">CREATE TABLE table1(
+     #xxx
+     #xxx
+ )ENGINE = INNODB;
+</code></pre>
+</li>
+<li>查看当前数据库支持的存储引擎<pre><code class="language-sql">SHOW ENGINES;
+</code></pre>
+</li>
+</ol>
+<h2 id="存储引擎特点">存储引擎特点</h2>
+<h3 id="font-colordd0000innodbfont"><font color="#dd0000">InnoDB</font></h3>
+<h4 id="介绍">介绍</h4>
+<p>InnoDB是一种兼顾高可靠性和高性能的通用存储引擎，在MySQL5.5之后，InnoDB是默认的MySQL存储引擎</p>
+<h4 id="特点">特点</h4>
+<p>DML操作遵循ACID模型，支持事务；<br>
+行级锁，提高并发访问性能；<br>
+支持外键FOREIGN KEY约束，保证数据的完整性和正确性；</p>
+<h4 id="文件">文件</h4>
+<p>xxx.ibd：xxx代表的是表名, innoDB引擎的每 张表都会对应这样一个表空间文件, 存储该表的表结构(frm. sdi) 、数据和索引。<br>
+参数: innodb_file_per_table<br>
+<img src="https://Yichongtian.github.io/post-images/1681566994640.png" alt="" loading="lazy"></p>
+<h3 id="font-colordd0000myisamfont"><font color="#dd0000">MyISAM</font></h3>
+<h4 id="介绍-2">介绍</h4>
+<p>MyISAM是MySQL早期的默认存储引擎。</p>
+<h4 id="特点-2">特点</h4>
+<p>不支持事务,不支持外键<br>
+支持表锁，不支持行锁<br>
+访问速度快</p>
+<h4 id="文件-2">文件</h4>
+<p>xxx.sdi：存储表结构信息<br>
+xxx.MYD：存储数据<br>
+xxx.MYI：存储索引</p>
+<h3 id="font-colordd0000memoryfont"><font color="#dd0000">Memory</font></h3>
+<h4 id="介绍-3">介绍</h4>
+<p>Memory引擎的表数据时存储在内存中的，由于受到硬件问题、或断电问题的影响，只能将这些表作为临时表或缓存使用。</p>
+<h4 id="特点-3">特点</h4>
+<p>内存存放<br>
+hash索引（默认）</p>
+<h4 id="文件-3">文件</h4>
+<p>xxx.sdi：存放表结构信息</p>
+<h3 id="font-colordd0000不同引擎的区别font"><font color="#dd0000">不同引擎的区别</font></h3>
+<figure data-type="image" tabindex="2"><img src="https://Yichongtian.github.io/post-images/1681567449754.png" alt="" loading="lazy"></figure>
+<h2 id="存储引擎选择">存储引擎选择</h2>
+<p>在选择存储引擎时，应该根据应用系统的特点选择合适的存储引擎。对于复杂的应用系统,还可以根据实际情况选择多种存储引擎进行组合。<br>
+<code>InnoDB</code> : 是MysqI的默认存储引擎，支持<strong>事务</strong>、外键。如果应用对事务的完整性有比较高的要求，在并发条件下要求数据的一致性，数据操作除了插入和查询之外，还包含很多的更新、删除操作，那么InnoDB存储引擎是比较合适的选择。<br>
+<code>MyISAM</code> :如果应用是以读操作和插入操作为主，只有很少的更新和删除操作，并且对事务的完整性、并发性要求不是很高，那么选择这个存储引擎是非常合适的。<br>
+<code>MEMORY</code>:将所有数据保存在内存中，访问速度快，通常用于临时表及缓存。MEMORY的缺陷就是对表的大小有限制，太大的表无法缓存在内存中，而且无法保障数据的安全性。</p>
+<h1 id="索引">索引</h1>
+<h2 id="索引概述">索引概述</h2>
+<p>索引(index) 是帮助MySQL高效获取数据的数据结构(有序)。在数据之外,数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用(指向)数据，这样就可以在这些数据结构. 上实现高级查找算法,这种数据结构就是索引。</p>
+<table>
+<thead>
+<tr>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>提高数据检索的效率，降低数据库的I0成本</td>
+<td>索引列也是要占用空间的。</td>
+</tr>
+<tr>
+<td>通过索引列对数据进行排序，降低数据排序的成本，降低CPU的消耗</td>
+<td>索引大大提高了查询效率，同时却也降低更新表的速度，如对表进行INSERT、UPDATE、 DELETE时，效率降低。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="索引结构">索引结构</h2>
+<p>MySQL的索引在存储引擎层实现，不同的存储引擎有不同的索引结构：</p>
+<table>
+<thead>
+<tr>
+<th>索引结构</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B+Tree索引</td>
+<td>最常见的索引类型，大部分引擎都支持B+树索引</td>
+</tr>
+<tr>
+<td>Hash索引</td>
+<td>底层数据结构是用哈希表实现的，只有精确匹配索引列的查询才有效不支持范围查询</td>
+</tr>
+<tr>
+<td>R-tree(空间索引)</td>
+<td>空间索引是MyISAM引擎的一个特殊索引类型，主要用于地理空间数据类型，通常使用较少</td>
+</tr>
+<tr>
+<td>Full-text(全文索引)</td>
+<td>是一种通过建立倒排索引,快速匹配文档的方式。类似于Lucene,Solr,ES</td>
+</tr>
+</tbody>
+</table>
+<p>在不指明的情况下，大多数情况默认讨论B+Tree索引<br>
+<font color="#dd0000">二叉树</font>：顺序插入时会形成一个链表，查询性能大大降低。大数据量情况下，层级较深，检索速度慢<br>
+<font color="#dd0000">红黑树</font>：红黑树基于二叉树的情况下做了自平衡，不会再形成链表了，解决了二叉树的第一个缺点，但是没有解决第二个<br>
+<font color="#dd0000">B-Tree（<strong>多路</strong>平衡查找树）</font>：以一颗最大度数（max-degree，树的度数指的是一个节点的子节点个数）为5（5阶）的b-tree为例（每个节点最多存储4个key，5个指针）<br>
+<img src="https://Yichongtian.github.io/post-images/1681632989538.png" alt="" loading="lazy"><br>
+可以使用一个 <a href="https://www.cs.usfca.edu/~galles/visualization/BTree.html">数据结构可视化网站</a> 对B树进行模拟<br>
+使用下列数据进行插入操作会有完整的树的分裂过程：</p>
+<pre><code class="language-java">100 65 169 368 900 556 780 35 215 1200 234 888 158 90 1000 88 120 268 250
+</code></pre>
+<p><img src="https://Yichongtian.github.io/post-images/1681634079388.png" alt="" loading="lazy"><br>
+向上述B树插入数据<code>250</code>，<code>250</code>在<code>169</code>和<code>556</code>之间，所以进入根节点的第三棵子树，并插入到子树的<code>234</code>和<code>268</code>之间<br>
+由于最大度数为5，此时度数来到了6，不满足树的条件，所以该节点会基于中间的值进行分裂，即：将<code>250</code>插入至父节点的中间<br>
+<code>215</code>和<code>234</code>重新组成处于<code>169</code>和<code>250</code>之间的子节点<code>268</code>和<code>368</code>组成<code>250</code>和<code>556</code>之间的子节点<br>
+这是根节点的存储个数来到5，度数来到6，所以根节点基于中间key进行分裂，过程同上，成为：<br>
+<img src="https://Yichongtian.github.io/post-images/1681634538309.png" alt="" loading="lazy"><br>
+<font color="#dd0000">B+Tree</font><br>
+<img src="https://Yichongtian.github.io/post-images/1681635035090.png" alt="" loading="lazy"><br>
+所有数据都会出现在叶子节点，叶子节点形成一个单项列表，非叶子节点主要起到索引作用<br>
+分裂时与B-Tree的区别是：分裂后那个向上分裂的key仍然会处于叶子节点中，并形成链表，图示：<br>
+<img src="https://Yichongtian.github.io/post-images/1681635309968.png" alt="" loading="lazy"><br>
+<font color="#dd0000">MySQL中的B+Tree</font><br>
+<img src="https://Yichongtian.github.io/post-images/1681635466371.png" alt="" loading="lazy"><br>
+MySQL索引数据结构对经典的B+Tree进行了优化。在原B+Tree的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的B+Tree，提高区间访问的性能。</p>
+<blockquote>
+<p>面试题<br>
+为什么InnoDB存储引擎选择使用B+Tree索引结构<br>
+1. 相较于二叉树，层级更少，搜索效率更高。<br>
+2. 对于B-Tree，无论是叶子节点还是非叶子节点，都会保存数据，这样导致一页中存储的键值变少，指针跟着减少，要同样保存大量数据，只能增加树的高度，导致性能降低。<br>
+3. 相对Hash索引，B+Tree支持范围匹配及排序操作。</p>
+</blockquote>
+<h2 id="索引分类">索引分类</h2>
+<p>在InnoDB引擎中，根据索引的存储形式，可以分为：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>含义</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>聚集索引(Clustered Index)</td>
+<td>将数据存储与索引放到了一块，索引结构的叶子节点保存了行数据</td>
+<td>必须有,而且只有一个</td>
+</tr>
+<tr>
+<td>二级索引(Secondary Index)</td>
+<td>将数据与索引分开存储，索引结构的叶子节点关联的是对应的主键</td>
+<td>可以存在多个</td>
+</tr>
+</tbody>
+</table>
+<p>聚集索引选取规则：</p>
+<ul>
+<li>如果存在主键，主键索引就是聚集索引。</li>
+<li>如果不存在主键，将使用第一个唯一（UNIQUE）索引作为聚集索引</li>
+<li>如果没有主键也没有合适的唯一索引，则InnoDB会自动生成一个rowid作为隐藏的聚集索引</li>
+</ul>
+<p>针对<code>select * from user where name = 'Arm';</code>这条sql语句举例，它的执行顺序如下，这一过程被称之为<strong>回表查询</strong><br>
+<img src="https://Yichongtian.github.io/post-images/1681637161461.png" alt="" loading="lazy"></p>
+<blockquote>
+<p>测试：下面两个sql语句哪个的执行效率更高？为什么？（id为主键，name字段创建了索引）<br>
+<code>select * from user where id = 10;</code><br>
+<code>select * from user where name = 'Arm';</code><br>
+答：第一条快，因为第一条只用查询聚集索引，而第二条要先查二级索引，再根据二级索引的结果查询聚集索引</p>
+</blockquote>
+<h2 id="索引语法">索引语法</h2>
+<pre><code class="language-sql">#创建索引
+create [UNIQUE|FULLTEXT] INDEX index_name ON table_name(col_name,...);
+#查看索引
+SHOW INDEX FROM table_name;
+#删除索引
+DROP INDEX index_name ON table_name;
+
+#练习：
+#1.name字段为姓名字段，该字段的值可能会重复，为该字段创建索引
+create index idx_user_name on tb_user(name);
+#2.phone手机号字段的值，是非空且唯一的，为该字段创建唯一索引
+create unique index idx_user_phone on tb_user(phone);
+#3.为profession、age、status创建联合索引
+create index idx_user_pro_age_sta on tb_user(profession, age, status);
+#4.为email创建合适的索引来体生查询效率
+create index idx_user_email on tb_user(email);
+#5.删除email的索引
+drop index idx_email on tb_email;
+</code></pre>
+<h2 id="sql性能分析">SQL性能分析</h2>
+<h3 id="sql执行频率">sql执行频率</h3>
+<p>MySQL客户端连接成功后,通过<code>show [session|global] status</code>命令可以提供服务器状态信息。通过如下指令,可以查看当前数据库的<code>INSERT</code>、<code>UPDATE</code>、<code>DELETE</code>、 <code>SELECT</code>的访问频次:</p>
+<pre><code class="language-sql">show global status like 'Com_______';
+</code></pre>
+<h3 id="慢查询日志">慢查询日志</h3>
+<p>（当我们发现执行Select语句的频次比较高）<br>
+慢查询日志记录了所有执行时间超过指定参数（long_query_time，单位：秒，默认10秒）的所有SQL语句的日志。MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（/etc/my.cnf）中配置如下信息:</p>
+<pre><code class="language-sql">#开启MySQL慢日志查询开关
+slow_query_log=1
+#设置慢日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志
+long_query_time=2
+</code></pre>
+<p>通过查看（/usr/local/mysql/localhost-slow.log）文件判断需要优化的语句</p>
+<h3 id="profile详情">profile详情</h3>
+<p>show profiles能够在做SQL优化时帮助我们了解时间都耗费到哪里去了。通过have_profiling参数，能够看到当前MySQL是否支持profile操作：<code>select @@hava_profiling;</code>，默认profiling是关闭的，可以通过set语句在session/global级别开启profiling：<code>set profiling = 1;</code>，通过<code>show profiles;</code>查看每一条语句的执行时长</p>
+<h3 id="explain执行计划">explain执行计划</h3>
+<p>explain可以查看SQL的执行计划、是否执行索引以及表的连接情况，语法：</p>
+<pre><code class="language-sql">#直接在select语句之前加上关键字explain/desc
+explain select * from table1;
+</code></pre>
+<p><img src="https://Yichongtian.github.io/post-images/1681645085268.png" alt="" loading="lazy"><br>
+各字段含义：（重点优化<code>type</code>，然后是<code>possible_keys</code>、<code>key</code>、<code>key_len</code>）</p>
+<ul>
+<li><code>id</code><br>
+select查询的序列号,表示查询中执行select子句或者是操作表的顺序(id相同,执行顺序从上到下; id不同,值越大,越先执行)。</li>
+<li><code>select_type</code><br>
+表示SELECT的类型，常见的取值有SIMPLE (简单表，即不使用表连接或者子查询)、PRIMARY (主查询,即外层的查询)、UNION (UNION中的第二个或者后面的查询语句)、SUBQUERY (SELECT/WHERE之后包含了子查询)等。</li>
+<li><code>type</code><br>
+表示连接类型，性能由好到差的连接类型为NULL（不查任何表）、system、const（主键或唯一索引出现）、eq_ref、ref（使用非唯一索引出现）、range、index（用了索引，但是仍然要遍历索引）、all。</li>
+<li><code>possible_key</code><br>
+可能在这张表上用到的索引，一个或多个。</li>
+<li><code>key</code><br>
+实际使用的索引，如果为NULL,则没有使用索引。</li>
+<li><code>key_len</code><br>
+表示索引中使用的字节数，该值为索引字段最大可能长度,并非实际使用长度，在不损失精确性的前提下，长度越短越好。</li>
+<li><code>rows</code><br>
+MySQL认为必须要执行查询的行数，在innodb引擎的表中， 是一个估计值，可能并不总是准确的。</li>
+<li><code>filtered</code><br>
+表示返回结果的行数占需读取行数的百分比， filtered 的值越大越好。</li>
+</ul>
+<h2 id="索引使用">索引使用</h2>
+<ul>
+<li><code>最左前缀法则</code><br>
+如果索引了多列(联合索引) , 要遵守最左前缀法则。最左前缀法则指的是查询从索引的最左列开始，并且不跳过索引中的列。<br>
+如果跳跃某一列, 索引将部分失效(后面的字段索引失效)。</li>
+<li><code>范围查询</code><br>
+联合索引中，出现范围查询(&gt;, &lt;)，范围查询右侧的列索引失效（所以尽量使用&gt;=和&lt;=来查询范围）</li>
+<li><code>索引列运算</code><br>
+尽量不要在索引列上进行运算操作，否则索引将失效</li>
+<li><code>字符串不加引号</code><br>
+字符串类型字段使用时，不加引号，索引将失效。</li>
+<li><code>模糊查询</code><br>
+如果仅仅是尾部模糊匹配，索引不会失效。如果是头部模糊匹配，索引失效。</li>
+<li><code>or连接的条件</code><br>
+用or分割开的条件，如果or前的条件 中的列有索引，而后面的列中没有索引，那么涉及的索引都不会被用到。</li>
+<li><code>数据分布影响</code><br>
+如果MySQL评估使用索引比全表更慢，则不使用索引。</li>
+<li><code>sql提示</code><br>
+SQL提示，是优化数据库的一个重要手段， 简单来说,就是在SQL语句中加入-些人为的提示来达到优化操作的目的。<pre><code class="language-sql">#use index:建议mysql使用xx索引
+explain select * from tb_user use index(idx_user_pro) where profession='软件工程';
+#ignore index:忽略xx索引
+explain select * from tb_user ignore index(idx_user_pro) where profession='软件工程';
+#force index:强制mysql使用xx索引
+explain select * from tb_user force index(idx_user_pro) where profession='软件工程';
+</code></pre>
+</li>
+<li>覆盖索引<br>
+尽量使用覆盖索引（查询使用了索引，并且需要返回的列，在该索引中能全部找到，减少select*）<pre><code class="language-sql">#假设tb_user表建立了name字段的唯一索引，id为主键
+#第一条sql在走完name索引（二级索引）之后还要根据拿到的id回表查询（聚集索引）
+#第二条sql只需要走完name索引（二级索引）
+select * from tb_user where name = 'Amy';
+select id, name from tb_user where name = 'Amy';
+</code></pre>
+</li>
+<li>前缀索引<br>
+当字段类型为字符串(varchar, text等 )时，有时候需要索引很长的字符串,这会让索引变得很大，查询时,浪费大量的磁盘IO，影响查询效率。此时可以只将字符串的一部分前缀建立索引，这样可以大大节约索引空间，从而提高索引效率。不重复的索引值占记录总数越多，效率越高<pre><code class="language-sql">#我要提取column列的前n个字符建立索引
+create index idx_xxx on table_name(column(n));
+#通过下面的方式来计算选择性
+select count(distinct substring(email,1,5))/count(*) from tb_user;
+</code></pre>
+</li>
+</ul>
+<h2 id="索引设计原则">索引设计原则</h2>
+<ol>
+<li>针对于数据量较大，且查询比较频繁的表建立索引。</li>
+<li>针对于常作为查询条件(where)、排序(order by)、分组(group by)操作的字段建立索引。</li>
+<li>尽量选择区分度高的列作为索引，尽量建立唯一索引，区分度越高,使用索引的效率越高。</li>
+<li>如果是字符串类型的字段,字段的长度较长，可以针对于字段的特点，建立前缀索引。</li>
+<li>尽量使用联合索引，减少单列索引,查询时，联合索引很多时候可以覆盖索引，节省存储空间,避免回表,提高查询效率。</li>
+<li>要控制索引的数量，索引并不是多多益善，索引越多，维护索引结构的代价也就越大,会影响增删改的效率。</li>
+<li>如果索引列不能存储NULL值，请在创建表时使用NOT NULL约束它。当优化器知道每列是否包含NULL值时，它可以更好地确定哪个索引最有效地用于查询。</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/sPqvQ3r7p/" class="tag">
+                    数据库
+                  </a>
+                
+                  <a href="https://Yichongtian.github.io/tag/mZGSHk45dW/" class="tag">
+                    MySQL
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/mysqlji-chu/">
+                  <h3 class="post-title">
+                    [MySQL]基础
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

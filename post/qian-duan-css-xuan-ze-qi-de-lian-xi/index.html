@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[前端]CSS选择器的练习 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="属性选择器
+源网页：
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt..." />
+    <meta name="keywords" content="前端" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[前端]CSS选择器的练习</h2>
+            <div class="post-date">2023-02-22</div>
+            
+            <div class="post-content" v-pre>
+              <h3 id="属性选择器">属性选择器</h3>
+<p>源网页：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+        .demo a{
+            float: left;
+            display: block;
+            height: 50px;
+            width: 50px;
+            border-radius: 10px;
+            background:turquoise;
+            text-align: center;
+            color: red;
+            text-decoration: none;
+            margin-right: 5px;
+            font: bold 20px/50px Arial;
+        }
+
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p class=&quot;demo&quot;&gt;
+        &lt;a href=&quot;http://www.baidu.com&quot; class=&quot;links item first&quot; id=&quot;first&quot;&gt;1&lt;/a&gt;
+        &lt;a href=&quot;&quot; class=&quot;links item active&quot; target=&quot;_blank&quot; title=&quot;test&quot;&gt;2&lt;/a&gt;
+        &lt;a href=&quot;images/123.html&quot; class=&quot;links item&quot; id=&quot;third&quot;&gt;3&lt;/a&gt;
+        &lt;a href=&quot;images/123.png&quot; class=&quot;links item&quot;&gt;4&lt;/a&gt;
+        &lt;a href=&quot;images/123/jpg&quot; class=&quot;links item&quot;&gt;5&lt;/a&gt;
+        &lt;a href=&quot;abc&quot; class=&quot;links item&quot;&gt;6&lt;/a&gt;
+        &lt;a href=&quot;/a.pdf&quot; class=&quot;links item&quot;&gt;7&lt;/a&gt;
+        &lt;a href=&quot;/abc.pdf&quot; class=&quot;links item&quot;&gt;8&lt;/a&gt;
+        &lt;a href=&quot;abc.doc&quot; class=&quot;links item&quot;&gt;9&lt;/a&gt;
+        &lt;a href=&quot;abcd.doc&quot; class=&quot;links item last&quot;&gt;10&lt;/a&gt;
+    &lt;/p&gt;
+    
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1677064972700.png" alt="" loading="lazy"></figure>
+<ol>
+<li>存在id属性的元素<pre><code class="language-css">a[id]{
+         background: yellow;
+ }
+</code></pre>
+<img src="https://Yichongtian.github.io/post-images/1677065130332.png" alt="" loading="lazy"></li>
+<li>选择id为first的元素<pre><code class="language-css">a[id=first]{
+         background: green;
+ }
+</code></pre>
+<img src="https://Yichongtian.github.io/post-images/1677065137601.png" alt="" loading="lazy"></li>
+<li>class中有links的元素<pre><code class="language-css">a[class*=&quot;links&quot;]{
+         background: skyblue;
+ }
+</code></pre>
+<img src="https://Yichongtian.github.io/post-images/1677065142719.png" alt="" loading="lazy"></li>
+<li>选中href中以http开头的元素<pre><code class="language-css">a[href^=http]{
+         background: white;
+ }
+ /* 
+      = 绝对等于
+     *= 包含这个元素
+     ^= 以这个开头
+     $= 以这个结尾
+  */
+</code></pre>
+<img src="https://Yichongtian.github.io/post-images/1677065150698.png" alt="" loading="lazy"></li>
+<li>选中href中以doc结尾的元素<pre><code class="language-css">a[href$=doc]{
+         background: steelblue;
+ }
+</code></pre>
+<img src="https://Yichongtian.github.io/post-images/1677065156911.png" alt="" loading="lazy"></li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/4q5wrwQYk/" class="tag">
+                    前端
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/java-chang-yong-yi-lai/">
+                  <h3 class="post-title">
+                    Java常用依赖
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

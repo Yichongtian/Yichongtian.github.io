@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]手写IoC | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="定义两个注解
+Bean注解（@Component）
+package com.yct.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotat..." />
+    <meta name="keywords" content="java" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]手写IoC</h2>
+            <div class="post-date">2023-04-26</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="定义两个注解">定义两个注解</h1>
+<p>Bean注解（<code>@Component</code>）</p>
+<pre><code class="language-java">package com.yct.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Bean {
+}
+</code></pre>
+<p>Di注解（<code>@Autowired</code>）</p>
+<pre><code class="language-java">package com.yct.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Di {
+}
+</code></pre>
+<h1 id="定义bean容器接口">定义bean容器接口</h1>
+<pre><code class="language-java">package com.yct.core;
+
+public interface ApplicationContext {
+    Object getBean(Class clazz);
+}
+</code></pre>
+<h1 id="定义bean容器接口的实现类">定义bean容器接口的实现类</h1>
+<pre><code class="language-java">package com.yct.core;
+
+import java.util.HashMap;
+
+public class OnionApplicationContext implements ApplicationContext{
+
+    //存储bean的容器
+    private HashMap&lt;Class, Object&gt; beanFactory = new HashMap&lt;&gt;();
+
+    @Override
+    public Object getBean(Class clazz) {
+        return null;
+    }
+
+    /**
+     * 根据包扫描加载Bean
+     * @param basePackage
+     */
+    public OnionApplicationContext(String basePackage) {
+    }
+}
+</code></pre>
+<p><strong>构造方法：</strong></p>
+<ol>
+<li>
+<p>将包名替换为路径：通过将包名中的 &quot;.&quot; 替换为 &quot;/&quot;，将包名转换为相对路径，用于查找类所在的绝对路径。</p>
+</li>
+<li>
+<p>获取包的绝对路径：通过调用当前线程的上下文类加载器的 getResources() 方法，传入参数 &quot;com/yct/core&quot;，获取该包名路径下的所有资源的 URL 列表，并遍历这个列表。</p>
+</li>
+<li>
+<p>获取绝对路径的前面部分：因为所有类前面的一大截路径都是一样的，所以可以通过获取相对路径的前面部分，即包名所在的路径即可确定所有类的主路径 rootPath 。</p>
+</li>
+<li>
+<p>加载类文件：将获取到的所有类文件递归加载到容器中。这里的 loadBean() 方法需要读取相应类文件的全名，并且把类名首字母小写作为 key ，将 class 对象与其对应起来，以供后续使用。</p>
+</li>
+</ol>
+<pre><code class="language-java">//1. 将包名替换为路径: com.yct.core -&gt; com/yct/core
+String basePackagePath = basePackage.replaceAll(&quot;\\.&quot;, &quot;/&quot;);
+
+//2. 获取包的绝对路径（带盘符）
+Enumeration&lt;URL&gt; urls = Thread.currentThread().getContextClassLoader().getResources(basePackagePath);
+
+while (urls.hasMoreElements()){
+    URL url = urls.nextElement();
+    String filePath = URLDecoder.decode(url.getFile(), &quot;utf-8&quot;);
+
+    //获取路径的前面部分，因为所有的包前面的一大截路径都是一样的
+    rootPath = filePath.substring(0, filePath.length()-basePackagePath.length());
+    loadBean(new File(filePath));
+}
+</code></pre>
+<p>这段代码中的关键代码在于逐个遍历包路径下的所有类，并将类名与 class 对象对应起来，用于后续的组装操作。该操作通常在一些框架或者中间件中会经常用到，应用较为广泛。<br>
+再来看看<code>loadBean(new File(filePath))</code>方法：<br>
+<code>loadBean</code>实现的功能是从指定的文件中加载所有被 @Bean 注解标记的类，并实例化这些类的对象，最终将这些对象存储到 <code>beanFactory</code> 集合中。</p>
+<ol>
+<li>判断传入的 file 是否为文件夹。</li>
+<li>如果 file 是文件夹，则获取文件夹中的所有内容。</li>
+<li>如果文件夹为空，直接返回。</li>
+<li>如果文件夹不为空，则遍历文件夹中的所有内容。
+<ol>
+<li>如果遍历得到的是文件夹，递归调用 loadBean() 方法，继续判断其中的内容。</li>
+<li>如果遍历得到的不是文件夹，则将其路径中的文件分隔符替换为点号，去掉 .class 后缀，得到完整的类名。</li>
+<li>判断得到的类是否被 @Bean 注解标记。
+<ol>
+<li>获取类的 <code>Class</code> 对象。</li>
+<li>判断类是否为接口。</li>
+<li>如果类不是接口，则获取该类上的 <code>@Bean</code> 注解。</li>
+<li>如果类上有 <code>@Bean</code> 注解，则使用 <code>clazz.getConstructor().newInstance()</code> 实例化该类的对象，并将对象存储到 <code>beanFactory</code> 集合中。如果该类实现了接口，则使用接口作为键，否则使用该类作为键。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code class="language-java">private void loadBean(File file) throws Exception {
+    // 判断给定的文件是否是一个目录
+    if(file.isDirectory()){
+        // 获取目录中的所有文件
+        File[] childFiles = file.listFiles();
+        // 如果目录为空，返回
+        if(childFiles == null || childFiles.length == 0){
+            return;
+        }
+        // 遍历目录中的所有文件
+        for (File childFile : childFiles) {
+            // 如果文件是一个目录，则递归调用 loadBean() 方法
+            if(childFile.isDirectory()){
+                loadBean(childFile);
+            }else{
+                // 获取文件的绝对路径，并将路径中的 '\' 替换为 '.'
+                String pathWithClass = childFile.getAbsolutePath().substring(rootPath.length() - 1);
+                pathWithClass = pathWithClass.replaceAll(&quot;\\\\&quot;, &quot;.&quot;);
+                // 如果文件是 .class 文件
+                if(pathWithClass.endsWith(&quot;.class&quot;)){
+                    // 去掉 .class 后缀，得到类的完整路径
+                    String fullName = pathWithClass.replace(&quot;.class&quot;, &quot;&quot;);
+                    // 根据完整路径获取 Class 对象
+                    Class&lt;?&gt; clazz = Class.forName(fullName);
+                    // 如果不是接口
+                    if( !clazz.isInterface() ){
+                        // 获取类上的 @Bean 注解
+                        Bean clazzAnnotation = clazz.getAnnotation(Bean.class);
+                        // 如果有 @Bean 注解，则实例化对象
+                        if(clazzAnnotation != null){
+                            Object o = clazz.getConstructor().newInstance();
+                            // 如果类实现了接口，使用接口作为 key 放到 beanFactory 中
+                            if(clazz.getInterfaces().length &gt; 0){
+                                beanFactory.put(clazz.getInterfaces()[0], o);
+                            }else{
+                                // 如果类没有实现接口，则使用类本身作为 key 放到 beanFactory 中
+                                beanFactory.put(clazz, o);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>然后是loadDi()方法：目的是实现自动装配，即通过扫描所有已实例化的对象，寻找其中带有@Di注解的属性，然后将属性类型与beanFactory中存储的对象匹配，如果匹配成功，则通过反射将对应的对象注入到属性中。具体实现过程如下（注意，这里的自动装配是基于属性类型匹配的，所以属性类型必须与beanFactory中存储的对象类型一致或为其子类，否则自动装配将无法成功。）：</p>
+<ol>
+<li>首先获取beanFactory中存储的所有对象的entrySet。</li>
+<li>遍历entrySet，获取每个对象obj。</li>
+<li>获取obj的所有属性fields。</li>
+<li>遍历fields，判断属性上是否有@Di注解。</li>
+<li>如果有，将属性设置为可访问，然后通过反射获取属性类型，并在beanFactory中查找是否存在该类型对应的对象。</li>
+<li>如果存在，则将该对象注入到属性中。</li>
+</ol>
+<pre><code class="language-java">private void loadDi() throws IllegalAccessException {
+    // 首先获取beanFactory中存储的所有对象的entrySet。
+    Set&lt;Map.Entry&lt;Class, Object&gt;&gt; entrySet = beanFactory.entrySet();
+    for (Map.Entry&lt;Class, Object&gt; entry : entrySet) {
+        // 遍历entrySet，获取每个对象obj。
+        Object obj = entry.getValue();
+        // 获取obj的所有属性fields。
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            // 遍历fields，判断属性上是否有@Di注解。
+            Di di = field.getAnnotation(Di.class);
+            if(di != null){
+                // 如果有，将属性设置为可访问，然后通过反射获取属性类型，并在beanFactory中查找是否存在该类型对应的对象。
+                field.setAccessible(true);
+                field.set(obj, beanFactory.get(field.getType()));
+            }
+        }
+    }
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/3sMdPvE3G/" class="tag">
+                    java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/mian-jing/">
+                  <h3 class="post-title">
+                    [面经]im the jumpmaster，duo~
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

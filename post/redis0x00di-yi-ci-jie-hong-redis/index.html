@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Redis]0x00.第一次接触Redis | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="什么是Redis
+Redis是一个基于内存的key-value结构数据库
+
+基于内存存储，读写性能高
+适合存储热点数据（热点商品、资讯、新闻）（短期内可能访问很多，如果都访问mysql这样的数据库，会对服务器造成很大的压力）
+企业应用广泛
+..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Redis]0x00.第一次接触Redis</h2>
+            <div class="post-date">2023-04-02</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="什么是redis">什么是Redis</h1>
+<p>Redis是一个基于<strong>内存</strong>的key-value结构数据库</p>
+<ul>
+<li>基于内存存储，读写性能高</li>
+<li>适合存储热点数据（热点商品、资讯、新闻）（短期内可能访问很多，如果都访问mysql这样的数据库，会对服务器造成很大的压力）</li>
+<li>企业应用广泛</li>
+</ul>
+<h1 id="redis简介">Redis简介</h1>
+<p><strong>官网</strong>: <a href="https://redis.io">Redis</a><br>
+<strong>Redis中文网</strong>:<a href="https://www.redis.net.cn/">Redis中文网</a><br>
+Redis is an open source(BSD licensed), in-memory data structure store, used as a database, cache, and message broker（Redis是一个开源的内存中的数据结构存储系统，它可以用作：数据库、缓存和消息中间件。）<br>
+Redis是用C语言开发的一个开源的高性能键值对(key-value)数据库,官方提供的数据是可以达到100000+的QPS ( 每秒内查询次数) 。它存储的value类型比较丰富，也被称为结构化的NoSql数据库。<br>
+NoSql (Not Only SQL)，不仅仅是SQL，泛指<strong>非关系型数据库</strong>。NoSql数据库并不是要取代关系型数据库，而是关系型数据库的补充。</p>
+<p>常见的关系型数据库(RDBMS)</p>
+<ul>
+<li>Mysql</li>
+<li>Oracle</li>
+<li>DB2</li>
+<li>SQLServer</li>
+</ul>
+<p>常见的非关系型数据库(NoSql)</p>
+<ul>
+<li>Redis</li>
+<li>Mongo db</li>
+<li>MemCached</li>
+</ul>
+<h2 id="redis应用场景">Redis应用场景</h2>
+<ul>
+<li>缓存</li>
+<li>任务队列</li>
+<li>消息队列</li>
+<li>分布式锁</li>
+</ul>
+<h1 id="redis的下载与安装">Redis的下载与安装</h1>
+<p>Windows：<a href="https://github.com/microsoftarchive/redis/releases">https://github.com/microsoftarchive/redis/releases</a><br>
+Linux：<a href="https://download.redis.io/release">https://download.redis.io/release</a></p>
+<h3 id="linux">linux</h3>
+<ol>
+<li>
+<h4 id="安装">安装</h4>
+<ol>
+<li>解压<code>tar -zxvf redis-4.0.0.tar.gz -C /usr/local/</code></li>
+<li>安装gcc<code>yuminstall gcc-c++</code></li>
+<li>进入/usr/local/redis-x.x.x,编译,直接<code>make</code></li>
+<li>进入redis的src目录安装 <code>make</code></li>
+</ol>
+</li>
+<li>
+<h4 id="测试服务启动">测试服务启动</h4>
+<p>在src目录下 <code>./redis-server</code>，成功后可以看到运行时的一些信息，默认端口号6379<br>
+<img src="https://Yichongtian.github.io/post-images/1680417501570.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<h4 id="连接服务">连接服务</h4>
+<p><code>./redis-cli</code><br>
+Ctrl+c停止运行<br>
+另一种停止的方式<br>
+<code>ps -ef | grep redis</code><br>
+<code>kill xxxxx</code></p>
+</li>
+<li>
+<h4 id="修改配置">修改配置</h4>
+<h5 id="后台运行"><strong>后台运行</strong></h5>
+<p><code>vim /usr/local/redis-4.0.0/redis.conf</code><br>
+找到daemonize这一行（使用/dae 命令寻找）</p>
+<pre><code> # By default Redis does not run as a daemon. Use 'yes' if you need it.
+ # Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+ daemonize no
+</code></pre>
+<p>将no改为yes，即设置为后台运行，不会霸占前台</p>
+<h5 id="密码"><strong>密码</strong></h5>
+<p>requeirepass xxx这一行为是否需要密码，取消注释即需要密码<br>
+<strong>例如</strong><br>
+<code>requeirepass password1</code><br>
+此时再运行redis-cli需要输入<code>auth password1</code>才能操作</p>
+<h5 id="允许远程连接"><strong>允许远程连接</strong></h5>
+<p>注释掉<code>bind 127.0.0.1</code>(不要忘了防火墙设置开放6379端口)</p>
+</li>
+<li>
+<h4 id="修改配置后运行">修改配置后运行</h4>
+<p><code>./src/redis-server ./redis.conf</code></p>
+</li>
+<li>
+<h4 id="带参数的客户端命令">带参数的客户端命令</h4>
+<p><code>redis-cli -h localhost -p 6379 -a passwprd1</code><br>
+-h ip地址<br>
+-p 端口号<br>
+-a 密码</p>
+</li>
+</ol>
+<h3 id="windows">Windows</h3>
+<h4 id="安装-2">安装</h4>
+<ol>
+<li>解压即可用...</li>
+</ol>
+<h4 id="服务启动">服务启动</h4>
+<p>直接运行redis-server.exe即可</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javaduo-tai/">
+                  <h3 class="post-title">
+                    [Java]多态
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[MySQL]进阶4（InnoDB引擎） | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="逻辑存储结构
+
+Tablespace（表空间）是InnoDB存储数据的最大单位,每个表都至少有一个表空间。表空间包含了表
+的数据、索引和元数据等信息。
+Segment（段） InnoDB存储数据的逻辑单位
+Extent（区）一个区是连续的磁..." />
+    <meta name="keywords" content="MySQL" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[MySQL]进阶4（InnoDB引擎）</h2>
+            <div class="post-date">2023-05-02</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="逻辑存储结构">逻辑存储结构</h1>
+<ol>
+<li><strong>Tablespace</strong>（表空间）是InnoDB存储数据的最大单位,每个表都至少有一个表空间。表空间包含了表<br>
+的数据、索引和元数据等信息。</li>
+<li><strong>Segment</strong>（段） InnoDB存储数据的逻辑单位</li>
+<li><strong>Extent</strong>（区）一个区是连续的磁盘空间，大小通常为1MB，每个区只于- -个段。</li>
+<li><strong>Page</strong>（页） 一个页的大小通常为16KB, InnoDB存储数据的最小单位就是页。</li>
+<li><strong>Row</strong>（行）具体数据</li>
+</ol>
+<h1 id="架构">架构</h1>
+<h2 id="in-memory-structures-内存结构">In-Memory Structures 内存结构</h2>
+<ol>
+<li><strong>Buffer Pool</strong>，在增删改查的时候，先操作缓冲池中的数据，再以一定频率刷新到磁盘，以Page为单位</li>
+<li><strong>Change Buffer</strong>，更改缓冲区，主要针对非唯一的二级索引，发现Page不在Buffer Pool中，先将变更后的数据存储在Change Buffer中，在之后数据被读取的时候，再将数据合并到Buffer Pool中。</li>
+<li><strong>Adaptive Hash Index</strong>，优化对Buffer Pool的查询</li>
+<li><strong>Log Buffer</strong>，日志缓冲区保存redo log，undo log，默认大小16M，定期刷新到磁盘</li>
+</ol>
+<h2 id="on-disk-structures-磁盘结构">On-Disk Structures 磁盘结构</h2>
+<ol>
+<li><strong>System Tablespace</strong> 是 MySQL 存储系统元数据的默认位置。这个表空间包含了系统表（比如 <code>mysql.*</code>，<code>performance_schema.*</code> 和 <code>information_schema.*</code>）。在 InnoDB 存储引擎中，System Tablespace 包括了数据字典和共享表空间。</li>
+<li><strong>File-Per-Table Tablespaces</strong> 为每个表单独创建的一个磁盘文件。</li>
+<li><strong>General Tablespaces</strong> 允许多个表共享一个表空间，这样可以更好地利用磁盘空间和提高管理效率。</li>
+<li><strong>Temporary Tablespaces</strong>存储临时表和排序所创建的表空间。</li>
+<li><strong>Undo Tablespaces</strong> 是用于实现事务的回滚和 MVCC 特性的表空间。</li>
+<li><strong>Doublewrite Buffer Files</strong> 是用于保护数据页免受磁盘写入过程中损坏的缓冲区。在每次数据页写入磁盘前，都会先写入 Doublewrite Buffer Files。</li>
+<li><strong>Redo Log</strong> 是用于记录数据更改操作的日志，用于恢复数据库。</li>
+</ol>
+<h2 id="后台线程">后台线程</h2>
+<p>在合适的时间将缓冲池中的数据刷新到磁盘文件中。</p>
+<ol>
+<li><strong>Master Thread</strong>：InnoDB 启动时启动，负责管理其他后台线程。</li>
+<li><strong>IO Thread</strong>：在后台启动多个 IO 线程，这些线程负责处理磁盘 I/O 请求。</li>
+<li><strong>Purge Thread</strong>：用于删除已经提交的事务的 undo 日志。</li>
+<li><strong>Page Cleaner Thread</strong>：定期扫描内存中的脏页，并将它们写入到磁盘。</li>
+</ol>
+<h1 id="事务原理">事务原理</h1>
+<h2 id="redo-log">redo log</h2>
+<p>持久性由 redo log实现<br>
+重做日志——记录事务提交时数据页的物理修改，在mysql中，如果修改了数据，那么事务提交前，首先会被记录成redo日志写入磁盘，等到事务提交时，再把新数据写入磁盘。<br>
+这也就是经常说的WAL（Write-Ahead Logging）。<br>
+<img src="https://Yichongtian.github.io/post-images/1683202957592.png" alt="" loading="lazy"></p>
+<h3 id="redo写入磁盘流程">redo写入磁盘流程</h3>
+<ol>
+<li>将上文提到的一组redo log写入redo log buffer（依然在内存中，依旧是为了调节CPU与磁盘写入速度的矛盾）。</li>
+<li>redo log buffer写入page cache（操作系统里的页，操作系统会找个时间自动刷到磁盘。或者你调用fsync函数就能确保刷盘）。</li>
+<li>page cache的数据刷到磁盘。</li>
+</ol>
+<h2 id="undo-log">undo log</h2>
+<p>原子性由 undo log实现<br>
+undo log记录的是逻辑日志，可以理解为：redolog记录了具体数据，undolog记录了修改过程，undolog用来提供事务回滚和MVCC（多版本并发控制）<br>
+undolog在事务执行时产生，事务提交时并不会立即删除undolog，因为这些日志还可能用于MVCC</p>
+<h1 id="mvcc">MVCC</h1>
+<h2 id="基本概念">基本概念</h2>
+<ul>
+<li>当前读<br>
+读取最新的版本，可以读取到别的事务提交的记录<br>
+select ... lock in share mode(共享锁)</li>
+<li>快照读<br>
+普通的select就是快照读（不加锁）读取的可能是历史记录<br>
+在RR隔离级别（默认）下，开启事务后的第一个select会产生一个快照，后面的select都是读取的该快照<br>
+RC隔离级别下，每次select都生成一个快照<br>
+串行化隔离级别下，快照读 退化成 当前读</li>
+<li>MVCC<br>
+Multi-Version Concurrency Control，多版本并发控制<br>
+维护一个数据库的多个版本，使读写操作没有冲突<br>
+MVCC的实现依赖于 数据库记录中的三个隐式字段、undolog、readView</li>
+</ul>
+<h2 id="实现原理">实现原理</h2>
+<ul>
+<li>记录中的三个隐式字段<br>
+显式字段就是我们自己创建的字段，但是还有两个innodb引擎帮我们添加的字段，没有主键的时候为三个字段</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>隐藏字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DB_TRX_ID</td>
+<td>记录插入这条记录或最后一次修改该记录的事务id</td>
+</tr>
+<tr>
+<td>DB_ROLL_PTR</td>
+<td>指向这条记录的上一个版本，用于配合undolog</td>
+</tr>
+<tr>
+<td>DB_ROW_ID</td>
+<td>表结构没有主键则生成该隐藏字段作为主键</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>undo log<br>
+insert的时候产生的undolog只在回滚时需要，所以事务提交以后可以被立刻删除<br>
+update、delete的时候，快照读的时候也需要（因为快照读历史），所以不会被立刻删除</li>
+<li>undo log版本链<br>
+不同事务或相同事务对同一条记录进行修改，会导致该记录的undolog生成一条记录版本链表，链表头部为最新的旧纪录，链表尾部是最老的旧纪录</li>
+<li>readView<br>
+readView记录当前活跃的事务id（未提交的事务），快照读读取redolog的哪一个版本是由readView决定的<br>
+RC隔离级别下，每次快照读都会产生一个readView<br>
+<img src="https://Yichongtian.github.io/post-images/1683206621403.png" alt="" loading="lazy"><br>
+RR隔离级别下，仅在第一次执行快照读时生成readView，后面一直用该readView</li>
+</ul>
+<p>MVCC + 锁机制 实现了数据库的隔离性<br>
+redolog和undolog实现了数据库的一致性</p>
+<h1 id="总结">总结</h1>
+<ol>
+<li><strong>逻辑存储结构</strong><br>
+表空间，段，区（1M），页（16K），行，一个区64个连续页，分配空间时会一次性申请4-5个区保证页是连续的</li>
+<li><strong>架构</strong><br>
+内存结构-缓冲区，对于一个数据库服务器大部分内存都是缓冲区<br>
+磁盘结构-各种表空间，log，双写缓冲文件</li>
+<li><strong>事务原理</strong><br>
+原子性-undolog（回滚）<br>
+持久性-redolog（写到磁盘）<br>
+一致性-undolog+redolog<br>
+隔离性-MVCC+锁</li>
+<li><strong>MVCC</strong><br>
+记录隐藏字段 --&gt; 形成了undolog版本链中的数据 --&gt; 供给readView查询</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/mZGSHk45dW/" class="tag">
+                    MySQL
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javaaop/">
+                  <h3 class="post-title">
+                    [Java]AOP
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

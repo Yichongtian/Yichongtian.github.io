@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]多态 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="多态
+多态的前提是：两个对象（类）存在继承关系
+多态的向上转型
+
+本质：父类的引用指向了子类的对象
+语法：父类类型 引用名 = new 子类类型();
+特点：编译类型看左边，运行类型看右边可以调用父类中的所有成员（须遵守访问权限），不能调用..." />
+    <meta name="keywords" content="java" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]多态</h2>
+            <div class="post-date">2023-04-01</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="多态">多态</h1>
+<p>多态的前提是：两个对象（类）存在继承关系</p>
+<h3 id="多态的向上转型">多态的向上转型</h3>
+<ol>
+<li>本质：父类的引用指向了子类的对象</li>
+<li>语法：父类类型 引用名 = new 子类类型();</li>
+<li>特点：编译类型看左边，运行类型看右边<br/>可以调用父类中的所有成员（须遵守访问权限），<br/>不能调用子类中特有成员<br/>运行的结果由子类的实现决定</li>
+</ol>
+<h3 id="多态的向下转型">多态的向下转型</h3>
+<ol>
+<li>语法：子类类型 引用名 = (子类类型)父类引用;</li>
+<li>特点：只能强转父类的引用，不能强转父类的对象<br>
+<strong>要求父类的引用必须指向的是当前目标类型的对象</strong><pre><code class="language-java">//先向上转型，此时animal的编译类型为Animal，运行类型为Cat，无法调用cat特有的方法和属性
+//调用子类重写父类的方法时，子类的实现生效
+Animal animal = new Cat();
+
+//如果想要这个animal也可以调用cat的方法，就需要用到向下转型
+//此时cat的编译类型和运行类型都是Cat
+//向下转型只能发生在这种情况，animal这个父类引用指向的其实是Cat类型的对象，所以才能强转
+Cat cat = (Cat) animal;
+</code></pre>
+向下转型后，可以调用子类类型中的所有成员</li>
+</ol>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/3sMdPvE3G/" class="tag">
+                    java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/linux-chang-yong-ming-ling/">
+                  <h3 class="post-title">
+                    linux常用命令
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

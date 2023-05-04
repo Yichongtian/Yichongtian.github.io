@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Java]AOP | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="动态代理模式
+一个接口：
+public interface Calculator {
+    int add(int i, int j);
+    int sub(int i, int j);
+    int mul(int i, int ..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Java]AOP</h2>
+            <div class="post-date">2023-04-30</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="动态代理模式">动态代理模式</h1>
+<p>一个接口：</p>
+<pre><code class="language-java">public interface Calculator {
+    int add(int i, int j);
+    int sub(int i, int j);
+    int mul(int i, int j);
+    int div(int i, int j);
+}
+</code></pre>
+<p>一个实现类:</p>
+<pre><code class="language-java">public class CalculatorImpl implements Calculator {
+    @Override
+    public int add(int i, int j) {
+        int result = i + j;
+        System.out.println(&quot;方法内部 result = &quot; + result);
+        return result;
+    }
+    /*
+    * ...省略
+    */
+}
+</code></pre>
+<p>这时我们需要一个用于生产代理对象的工厂类，只需要把需要做额外功能的对象传进去，就可以拿到想要的代理对象，下面这段代码是一个动态代理工厂类 ProxyFactory，它的作用是通过传入一个目标对象 target，返回该对象的代理对象。</p>
+<pre><code class="language-java">public class ProxyFactory {
+
+    private Object target;
+
+    public ProxyFactory(Object target) {
+        this.target = target;
+    }
+
+    public Object getProxy(){
+        /*
+        *  创建代理对象的过程
+        */
+        return Proxy.newProxyInstance(classLoader, interfaces, invocationHandler);
+    }
+}
+</code></pre>
+<p>Proxy类是实现动态代理的关键，它提供了一个静态方法<code>newProxyInstance()</code>来创建一个代理对象，该代理对象实现了指定接口的所有方法，并将这些方法的调用委托给<code>InvocationHandler</code>接口的实现类来处理。<br>
+<code>newProxyInstance()</code>方法接收三个参数：<code>ClassLoader</code>，接口数组和<code>InvocationHandler</code>接口的实现类。<code>ClassLoader</code>用于加载代理类，接口数组表示需要实现的接口，<code>InvocationHandler</code>接口的实现类用于处理代理对象的方法调用。</p>
+<ol>
+<li>首先获取目标对象的 <code>ClassLoader</code> 和实现的接口数组，</li>
+<li>然后定义了一个 <code>InvocationHandler</code> 对象，该对象是代理对象的回调处理器，用于在代理对象方法调用前后添加额外的逻辑。在这个回调处理器中，我们可以通过 <code>method</code> 参数获取代理对象方法的相关信息，如方法名、参数等，并在方法执行前后打印日志，</li>
+<li>最后通过 <code>method.invoke()</code> 方法调用目标对象的方法。最后，我们通过 <code>Proxy.newProxyInstance()</code> 方法创建代理对象并返回。</li>
+</ol>
+<pre><code class="language-java">public Object getProxy(){
+    // ClassLoader：加载动态生成的代理类的类加载器
+    ClassLoader classLoader = target.getClass().getClassLoader();
+    // Class[] interfaces：目标对象实现的所有接口的class对象所组成的数组
+    Class&lt;?&gt;[] interfaces = target.getClass().getInterfaces();
+    // InvocationHandler：设置代理对象实现目标对象方法的过程，即代理类中如何重写接口中的抽象方法
+    InvocationHandler invocationHandler = new InvocationHandler() {
+        /**
+         * proxy：代理对象
+         * method：代理对象需要实现的方法，即其中需要重写的方法
+         * args：method所对应方法的参数
+         */
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println(&quot;[动态代理][日志]&quot; + method.getName() + &quot;， 参数: &quot; + Arrays.toString(args) + &quot; 执行前... &quot;);
+            Object result = method.invoke(target, args);
+            System.out.println(&quot;[动态代理][日志]&quot; + method.getName() + &quot;， 结果: &quot; + result + &quot; 执行结束... &quot;);
+            return result;
+        }
+    };
+
+    return Proxy.newProxyInstance(classLoader, interfaces, invocationHandler);
+}   
+</code></pre>
+<h1 id="五种通知">五种通知</h1>
+<p>在Spring中，要对一个方法进行增强，我们需要引入下面的依赖：</p>
+<pre><code class="language-xml">&lt;!--spring aop依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-aop&lt;/artifactId&gt;
+    &lt;version&gt;6.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!--spring aspects依赖--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-aspects&lt;/artifactId&gt;
+    &lt;version&gt;6.0.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>然后得创建一个切面类，切面类需要做的事情：设置切入点、设置通知类型<br>
+切面类需要用到<code>@Aspect</code>注解和<code>@Component</code>注解，<code>@Aspect</code>表示这个类是一个切面类，<code>@Component</code>注解保证这个切面类能够放入IOC容器，所以还需要将这个切面类交给IoC容器处理，所以需要开启包扫描，并配置开启AspectJ的自动代理，为目标对象自动生成代理</p>
+<pre><code class="language-xml">&lt;context:component-scan base-package=&quot;com.shou.aopAnnotation&quot;&gt;&lt;/context:component-scan&gt;
+&lt;aop:aspectj-autoproxy /&gt;
+</code></pre>
+<p>共有5种通知类型：</p>
+<ul>
+<li>前置通知：使用<code>@Before</code>注解标识，在被代理的目标方法前执行</li>
+<li>返回通知：使用<code>@AfterReturning</code>注解标识，在被代理的目标方法成功结束后执行（寿终正寝）</li>
+<li>异常通知：使用<code>@AfterThrowing</code>注解标识，在被代理的目标方法异常结束后执行（死于非命）</li>
+<li>后置通知：使用<code>@After</code>注解标识，在被代理的目标方法最终结束后执行（盖棺定论）</li>
+<li>环绕通知：使用<code>@Around</code>注解标识，使用<code>try...catch...finally</code>结构围绕整个被代理的目标方法，包括上面四种通知对应的所有位置</li>
+</ul>
+<p><strong>切入点表达式</strong>：<br>
+<img src="https://Yichongtian.github.io/post-images/1682945244319.png" alt="" loading="lazy"></p>
+<pre><code class="language-java">// 前置 @Before(value = &quot;切入点表达式配置切入点&quot;)
+@Before(&quot;execution(public int com.shou.aopAnnotation.CalculatorImpl.*(..)) &quot;)
+public void beforeMethod(JoinPoint joinPoint){
+    Object[] args = joinPoint.getArgs();
+    System.out.println(&quot;Logger--&gt;前置通知, 方法参数：&quot;+ Arrays.toString(args));
+}
+
+// 后置 @After()
+@After(&quot;execution(public int com.shou.aopAnnotation.CalculatorImpl.*(..))&quot;)
+public void afterMethod(JoinPoint joinPoint){
+    String methodName = joinPoint.getSignature().getName();
+    System.out.println(&quot;Logger--&gt; &quot;+methodName +&quot; 的后置通知&quot;);
+}
+
+// 返回 @AfterReturning
+@AfterReturning(value = &quot;execution(public int com.shou.aopAnnotation.CalculatorImpl.*(..))&quot;, returning = &quot;result&quot;)
+public void afterReturningMethod(JoinPoint joinPoint, Object result){
+    String methodName = joinPoint.getSignature().getName();
+    System.out.println(&quot;Logger--&gt; &quot;+methodName +&quot; 的返回通知， result = &quot;+result);
+}
+
+// 异常 @AfterThrowing
+@AfterThrowing(value = &quot;execution(* com.shou.aopAnnotation.CalculatorImpl.*(..))&quot;, throwing = &quot;ex&quot;)
+public void afterThrowingMethod(JoinPoint joinPoint, Throwable ex){
+    String methodName = joinPoint.getSignature().getName();
+    System.out.println(&quot;Logger--&gt; &quot;+methodName +&quot; 的异常通知: &quot;+ex);
+}
+
+// 环绕 @Around()
+@Around(&quot;execution(* com.shou.aopAnnotation.CalculatorImpl.*(..))&quot;)
+public Object afterThrowingMethod(ProceedingJoinPoint joinPoint){
+    String methodName = joinPoint.getSignature().getName();
+    Object result = new Object();
+    try {
+        System.out.println(&quot;========环绕通知========执行前&quot;);
+        result = joinPoint.proceed();
+        System.out.println(&quot;========环绕通知========目标方法返回值之后&quot;);
+    }catch (Throwable throwable){
+        throwable.printStackTrace();
+        System.out.println(&quot;========环绕通知========目标方法出现异常&quot;);
+    }finally {
+        System.out.println(&quot;========环绕通知========目标方法执行完毕&quot;);
+    }
+    return result;
+}
+</code></pre>
+<p>通过上面的例子我们发现多个增强的切入点表达式是一样的，为了减少冗余，可以使用<strong>重用切入点表达式</strong>在切面类中声明如下方法：</p>
+<pre><code class="language-java">@Pointcut(&quot;execution(public int com.shou.aopAnnotation.CalculatorImpl.*(..))&quot;)
+public void pointCut(){}
+</code></pre>
+<p>使用时只需要在切面表达式value中写pointCut()就好了<code>@Before(&quot;pointCut()&quot;)</code></p>
+<h1 id="切面优先级">切面优先级</h1>
+<p>相同目标方法上同时存在多个切面时，切面的优先级控制切面的<strong>内外嵌套</strong>顺序。</p>
+<ul>
+<li>优先级高的切面：外面</li>
+<li>优先级低的切面：里面</li>
+</ul>
+<p>使用@Order注解可以控制切面的优先级：</p>
+<ul>
+<li>@Order(较小的数)：优先级高</li>
+<li>@Order(较大的数)：优先级低<br>
+<img src="https://Yichongtian.github.io/post-images/1682945779551.png" alt="" loading="lazy"></li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/javafu-xi-yi-xia-fan-she/">
+                  <h3 class="post-title">
+                    [Java]复习一下反射
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

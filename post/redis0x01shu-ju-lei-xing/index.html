@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[Redis]0x01.常用操作 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="数据类型
+Redis存储的是key-value结构的数据，其中key是字符串类型，value有5种常用的数据类型：
+
+字符串 string
+哈希 hash
+列表 list
+集合 set
+有序集合 sorted set
+
+
+常用命令
+字符串s..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[Redis]0x01.常用操作</h2>
+            <div class="post-date">2023-04-02</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="数据类型">数据类型</h1>
+<p>Redis存储的是key-value结构的数据，其中key是字符串类型，value有5种常用的数据类型：</p>
+<ul>
+<li>字符串 string</li>
+<li>哈希 hash</li>
+<li>列表 list</li>
+<li>集合 set</li>
+<li>有序集合 sorted set<br>
+<img src="https://Yichongtian.github.io/post-images/1680425695306.png" alt="" loading="lazy"></li>
+</ul>
+<h1 id="常用命令">常用命令</h1>
+<h2 id="字符串string操作命令">字符串string操作命令</h2>
+<h3 id="常用命令-2">常用命令：</h3>
+<ul>
+<li><code>set key value</code> 设置指定key的值</li>
+<li><code>get key</code>获取指定key的值</li>
+<li><code>setex key seconds value</code>设置指定key的值，并将key的过期时间设置为seconds秒（常见应用场景：设置验证码，x分钟后验证码失效）</li>
+<li><code>setnx key value</code>只有在key不存在时设置key的值（常见应用：分布式锁）</li>
+</ul>
+<h2 id="哈希hash操作命令">哈希hash操作命令</h2>
+<p>Redis hash是一个string类型的field和value的映射表，hash特别适合用于存储对象。</p>
+<h3 id="常用命令-3">常用命令：</h3>
+<ul>
+<li><code>HSET key field value</code> 将哈希表key中的字段field的值设为value</li>
+<li><code>HGET key field</code> 获取存储在哈希表中指定字段的值</li>
+<li><code>HDEL key field</code> 删除存储在哈希表中的指定字段</li>
+<li><code>HKEYS key</code> 获取哈希表中所有字段</li>
+<li><code>HVALS key</code> 获取哈希表中所有值</li>
+<li><code>HGETALL key</code> 获取在哈希表中指定key的所有字段和值<br>
+<img src="https://Yichongtian.github.io/post-images/1680425703085.png" alt="" loading="lazy"></li>
+</ul>
+<h2 id="列表list操作命令">列表list操作命令</h2>
+<p>Redis列表是简单的字符串列表，按照插入顺序排序。</p>
+<h3 id="常用命令-4">常用命令：</h3>
+<ul>
+<li><code>LPUSH key value1 [value2]</code> 将一个或多个值插入到列表头部</li>
+<li><code>LRANGE key start stop</code> 获取列表指定范围内的元素</li>
+<li><code>RPOP key</code> 移除并获取列表最后一个元素</li>
+<li><code>LPOP key</code> 同上，左出</li>
+<li><code>LLEN key</code> 获取列表长度</li>
+<li><code>BRPOP key1 [key2] timeout</code> 移出并获取列表的最后一个元素，如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止<br>
+<img src="https://Yichongtian.github.io/post-images/1680491042886.png" alt="" loading="lazy"></li>
+</ul>
+<h2 id="集合set操作命令">集合set操作命令</h2>
+<p>Redis set是string类型的无序集合。集合成员是唯一的，这就意味着集合中不能出现重复的数据。</p>
+<h3 id="常用命令-5">常用命令：</h3>
+<ul>
+<li><code>SADD key member1 [member2]</code> 向集合添加一个或多个成员</li>
+<li><code>SMEMBERS key</code> 返回集合中的所有成员</li>
+<li><code>SCARD key</code> 获取集合的成员数</li>
+<li><code>SINTER key1 [key2]</code> 返回给定所有集合的交集</li>
+<li><code>SUNION key1 [key2]</code> 返回所有给定集合的并集</li>
+<li><code>SDIFF key1 [key2]</code> 返回给定所有集合的差集</li>
+<li><code>SREM key member1 [member2]</code> 移除集合中一个或多个成员<br>
+<img src="https://Yichongtian.github.io/post-images/1680493460974.png" alt="" loading="lazy"></li>
+</ul>
+<h2 id="有序集合sorted-set操作命令">有序集合sorted set操作命令</h2>
+<p>Redis sorted set有序集合是stirng类型元素的集合，且不允许重复的成员。每个元素都会关联一个double类型的分数（score）。redis正是通过分数来为集合中的成员进行从小到大排序。有序集合的成员是唯一的，但分数却可以重复。</p>
+<h3 id="常用命令-6">常用命令：</h3>
+<ul>
+<li><code>ZADD key score1 member1 [score2 member2]</code>向有序集合添加一个或多个成员，或者更新已存在成员的分数</li>
+<li><code>ZRANGE key start stop [WITHSCORES]</code> 通过索引区间返回有序集合中指定区间内的成员</li>
+<li><code>ZINCRBY key increment mmeber</code> 有序集合中对指定成员的分数加上增量increment</li>
+<li><code>ZREM key member [member]</code> 移除有序集合中的一个或多个成员<br>
+<img src="https://Yichongtian.github.io/post-images/1680495233265.png" alt="" loading="lazy"><br>
+<br/></li>
+</ul>
+<h1 id="通用命令">通用命令</h1>
+<ul>
+<li><code>KEYS pattern</code> 查找所有符合戈丁模式的key，例如<code>KEYS *</code>查询所有key</li>
+<li><code>EXISTS key</code> 检查给定key是否存在</li>
+<li><code>TYPE key</code> 返回key所存储的值的类型</li>
+<li><code>TTL key</code> 返回给定key的剩余生存时间（Time To Live）</li>
+<li><code>DEL key</code> 该命令用于在key存在时删除key</li>
+<li><code>FLUSHALL</code> 清空数据库</li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/redis0x00di-yi-ci-jie-hong-redis/">
+                  <h3 class="post-title">
+                    [Redis]0x00.第一次接触Redis
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

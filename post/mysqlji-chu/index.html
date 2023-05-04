@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[MySQL]基础 | Onion|个人博客</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Yichongtian.github.io/favicon.ico?v=1683210075183">
+<link rel="stylesheet" href="https://Yichongtian.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="基础sql
+sql分类
+DDL （Data Definition Language） 数据定义语言，用来定义数据库对象（数据库、表、字段）
+DML （Data Manipulation Language） 数据操作语言，用来对数据库表中的数..." />
+    <meta name="keywords" content="数据库,MySQL" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Yichongtian.github.io">
+        <img src="https://Yichongtian.github.io/images/avatar.png?v=1683210075183" class="site-logo">
+        <h1 class="site-title">Onion|个人博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于我本人
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/Yichongtian" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://twitter.com/onion_yct" target="_blank">
+            <i class="fab fa-twitter"></i>
+          </a>
+        
+      
+        
+          <a class="social-link" href="https://weibo.com/u/3925291565" target="_blank">
+            <i class="fab fa-weibo"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      吾日三省吾身
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Yichongtian.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[MySQL]基础</h2>
+            <div class="post-date">2023-04-14</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="基础sql">基础sql</h1>
+<p>sql分类<br>
+<code>DDL</code> （Data Definition Language） 数据定义语言，用来定义数据库对象（数据库、表、字段）<br>
+<code>DML</code> （Data Manipulation Language） 数据操作语言，用来对数据库表中的数据<strong>增删改</strong><br>
+<code>DQL</code> （Data Query Language） 数据查询语言，用来<strong>查询</strong>数据库中表的记录<br>
+<code>DCL</code> （Data Control Language） 数据控制语言，用来创建数据库用户、控制数据库的访问权限<br>
+常用基础语句：</p>
+<ul>
+<li>查询表结构<pre><code class="language-sql">DESC 表名;
+</code></pre>
+</li>
+<li>查询指定表的建表语句<pre><code class="language-sql">show create table 表名;
+</code></pre>
+</li>
+</ul>
+<p>基本数据类型：数值类型、字符串类型、日期时间类型<br>
+<img src="https://Yichongtian.github.io/post-images/1681475438333.png" alt="" loading="lazy"><br>
+<img src="https://Yichongtian.github.io/post-images/1681475705703.png" alt="" loading="lazy"><br>
+<img src="https://Yichongtian.github.io/post-images/1681475928164.png" alt="" loading="lazy"></p>
+<h2 id="来一个表">来一个表</h2>
+<pre><code class="language-sql">CREATE TABLE `emp`  (
+  `id` int NULL DEFAULT NULL COMMENT '编号',
+  `workno` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '工号',
+  `name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '姓名',
+  `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '性别',
+  `age` tinyint UNSIGNED NULL DEFAULT NULL COMMENT '年龄',
+  `idcard` char(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '身份证号',
+  `entrydata` date NULL DEFAULT NULL COMMENT '入职时间'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '员工表' ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://Yichongtian.github.io/post-images/1681477953379.png" alt="" loading="lazy"></figure>
+<ol>
+<li>（分组查询）根据性别分组，统计男女员工各自的数量</li>
+</ol>
+<pre><code class="language-sql">SELECT sex, count(*) from emp GROUP BY sex;
+</code></pre>
+<ol start="2">
+<li>（分组查询）查询年龄小于45的员工，并根据工作地址分组获取员工数量大于等于3的工作地址</li>
+</ol>
+<pre><code class="language-sql">SELECT address, count(*) from emp where age&lt;45 GROUP BY address HAVING count(*) &gt;= 3
+</code></pre>
+<ol start="3">
+<li>（排序查询）根据年龄对员工进行升序排序，年龄相同，再按照入职时间进行降序排序</li>
+</ol>
+<pre><code class="language-sql">SELECT name, age, entrydata from emp ORDER BY age ASC, entrydata DESC
+</code></pre>
+<ol start="4">
+<li>（分页查询）查询第二页，每页展示10条数据</li>
+</ol>
+<pre><code class="language-sql">SELECT * FROM emp LIMIT 10, 10 
+</code></pre>
+<p><strong>练习</strong>：<br>
+查询性别为男，并且年龄在20-40 岁(含)以内的姓名为三个字的员工。</p>
+<pre><code class="language-sql">SELECT * FROM emp WHERE sex = '男' and age BETWEEN 100 and 250 and `name` LIKE '___'
+</code></pre>
+<p>统计员工表中，年龄小于60岁的 ，男性员工和女性员工的人数。</p>
+<pre><code class="language-sql">SELECT sex, count(*) FROM emp WHERE age&lt;60 GROUP BY sex
+</code></pre>
+<h1 id="函数">函数</h1>
+<p>函数是指一段可以直接被另一段程序调用的程序或代码，比如，数据表里存放了员工入职的日期，但是我们需要得到员工入职的天数</p>
+<h2 id="常见数值函数">常见数值函数</h2>
+<pre><code class="language-sql">ceil(x) #向上取整
+floor(x) #向下取整
+mod(x,y) #返回x%y
+rand() #返回0~1的随机数
+round(x,y) #求参数x四舍五入的值，保留y位小数
+</code></pre>
+<p><strong>练习</strong>：生成一个6位验证码</p>
+<pre><code class="language-sql">SELECT 	RPAD(ROUND((RAND()*1000000), 0),6,'0')
+</code></pre>
+<h2 id="常见日期函数">常见日期函数</h2>
+<pre><code class="language-sql">CURDATE() #返回当前日期
+CURTIME() #返回当前时间
+NOW() #返回当前日期和时间
+YEAR(date) #获取指定date的年份
+MONTH(date) #获取指定date的月份
+DAY(date) #获取指定date的日期
+
+DATE_ ADD(date, INTERVAL expr type) #返回一个日期/时间值加上一个时间间隔expr后的时间值
+SELECT DATE_ADD(NOW(),INTERVAL 70 DAY); #返回当前日期往后推70天的日期
+
+DATEDIFF(date1,date2) #返回起始时间date1和结束时间date2之间的天数
+SELECT DATEDIFF(NOW(),DATE_ADD(NOW(),INTERVAL 70 DAY)); #返回第一个时间减去第二个时间
+</code></pre>
+<p><strong>练习</strong>：查询所有员工的入职天数，并根据入职天数倒序排列</p>
+<pre><code class="language-sql">SELECT `name`, DATEDIFF(CURDATE(), entrydata) days_gone from emp ORDER BY days_gone DESC
+</code></pre>
+<h2 id="流程函数">流程函数</h2>
+<pre><code class="language-sql">#如果value为true,则返回t,否则返回f
+IF(value, t, f) 
+
+#如果value1不为空，返回value1, 否则返回value2
+IFNULL(value1, value2) 
+
+#如果val1为true,返回res1, .. 否则返回default默认值
+CASE WHEN [val1] THEN [res1] ... ELSE [default] END 
+
+#如果expr的值等于val1,返回res1, ... 否则返回default默认值
+CASE[expr] WHEN [val1] THEN [res1] ... ELSE[default] END 
+</code></pre>
+<p><strong>练习</strong>：统计成绩，大于90展示优秀，80到90之间展示中等，否则展示合格</p>
+<pre><code class="language-sql">select score case when score &gt;=90 then '优秀' when score&gt;=80 then '普通' else '及格' end from emp 
+</code></pre>
+<h1 id="约束">约束</h1>
+<p><img src="https://Yichongtian.github.io/post-images/1681548136890.png" alt="" loading="lazy"><br>
+外键用来让两张表的数据之间建立连接,从而保证数据的一致性和完整性。<br>
+<img src="https://Yichongtian.github.io/post-images/1681548839092.png" alt="" loading="lazy"></p>
+<h1 id="多表查询">多表查询</h1>
+<h2 id="内连接">内连接</h2>
+<p>语法：</p>
+<pre><code class="language-sql">select * from a,b where ();
+#或者
+select * from a join b on ();
+</code></pre>
+<h2 id="外连接">外连接</h2>
+<p>语法</p>
+<pre><code class="language-sql">select * from a left join b on ();  #左外连接
+select * from a right join b on (); #右外连接
+</code></pre>
+<p>其实左外连接和右外连接可以相互转换，通常使用左外连接<br>
+练习：</p>
+<ol>
+<li>查询emp表的所有数据和对应的部门信息（左外连接）</li>
+<li>查询dept表的所有数据，和对应的员工信息（右外连接）<pre><code class="language-sql">#1
+select e.*,d.`name` from emp e LEFT JOIN dept d on e.dept_id = d.id
+#2
+select d.*,e.* from emp e RIGHT JOIN dept d on e.dept_id = d.id
+</code></pre>
+</li>
+</ol>
+<h2 id="自连接">自连接</h2>
+<p>额</p>
+<h2 id="联合查询">联合查询</h2>
+<pre><code class="language-sql">select * from a
+union [all]
+select * from b
+</code></pre>
+<p>直接把第一个查询和第二个查询上下拼接，所以：<br>
+对于联合查询的多张表的列数必须保持一致，字段类型也需要保持一致<br>
+<code>union all</code>会将全部的数据直接合并在一起，<code>union</code>会对合并之后的数据去重</p>
+<h2 id="子查询嵌套查询">子查询（嵌套查询）</h2>
+<p>子查询外部的语句可以是增删改查的任何一个</p>
+<pre><code class="language-sql">select * from t1 where column1 = (
+    select column1 from t2
+);
+</code></pre>
+<p>根据子查询结果不同，分为：</p>
+<ul>
+<li>标量子查询（子查询结果为单个值）</li>
+<li>列子查询（子查询结果为1列）（常用in，not in，any，some，all）</li>
+<li>行子查询（子查询结果为1行）（常用=，&lt;&gt;，in，not in）</li>
+<li>表子查询（子查询结果为多行多列）（常用in）<br>
+根绝子查询位置，分为where之后、from之后、select之后<br>
+练习：</li>
+</ul>
+<pre><code class="language-sql">#查询部门名称为工程部的员工信息
+select emp.`name`, '工程部' from emp where emp.dept_id = (
+	select id from dept where `name` = '工程部'
+)
+
+#查询在杜宇宁入职之后再入职的员工信息
+SELECT * from emp WHERE entrydata &gt; (
+	select entrydata from emp WHERE `name` = '杜宇宁'
+)
+
+#查询比 公关部所有员工的年龄 都大的全部员工
+SELECT * from emp WHERE age &gt; ALL(
+	SELECT age from emp WHERE dept_id = (
+		select `id` from dept WHERE `name` = '公关部'
+	)
+)
+
+#查询所有与许子韬同部门且同地区的员工信息
+SELECT * from emp where (address,dept_id) = (
+	SELECT address,dept_id FROM emp where `name`='许子韬'
+)
+</code></pre>
+<h1 id="事务">事务</h1>
+<h2 id="事务简介">事务简介</h2>
+<p>事务是一组操作的集合，它是一个不可分割的工作单位，事务会把所有的操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时失败。<br>
+<img src="https://Yichongtian.github.io/post-images/1681559850678.png" alt="" loading="lazy"></p>
+<h2 id="事务操作">事务操作</h2>
+<p><code>select @@autocommit;</code> 查看当前事务提交设置，1为自动提交，0为手动提交<br>
+<code>set @@autocommit = 0</code> 设置为手动提交<br>
+<code>rollback;</code>回滚数据<br>
+如果事务操作成功，则通过<code>commit;</code>提交，否则通过<code>rollback;</code>回滚<br>
+开启事务：<code>START TRANSACTION;</code>或<code>BEGIN;</code></p>
+<h2 id="事务四大特性">事务四大特性</h2>
+<p><strong>ACID</strong></p>
+<ul>
+<li>原子性(<strong>A</strong>tomicity) :事务是不可分割的最小操作单元，要么全部成功，要么全部失败。</li>
+<li>一致性 (<strong>C</strong>onsistency) :事务完成时,必须使所有的数据都保持一致状态。</li>
+<li>隔离性(<strong>I</strong>solation):数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行。</li>
+<li>持久性(<strong>D</strong>urability) :事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。</li>
+</ul>
+<h2 id="并发事务问题">并发事务问题</h2>
+<ul>
+<li>脏读：一个事务读取到另一个事务还没有提交的数据</li>
+<li>不可重复读：一个事务先后读取同一条记录，但两次读取的数据不同，称之为不可重复读</li>
+<li>幻读：一个事务按照条件查询数据时，没有对应的数据行，但是在插入数据时，又发现这行数据已经存在。</li>
+</ul>
+<h2 id="事务隔离级别">事务隔离级别</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">隔离级别</th>
+<th style="text-align:center">脏读</th>
+<th style="text-align:center">不可重复读</th>
+<th style="text-align:center">幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Read uncommitter</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Read committed</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Repeatable Read（默认）</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">√</td>
+</tr>
+<tr>
+<td style="text-align:center">Serializable</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+<td style="text-align:center">×</td>
+</tr>
+</tbody>
+</table>
+<p>查看事务隔离级别<br>
+<code>SELECT @@TRANSACTION_ISOLATION</code><br>
+设置事务隔离级别<br>
+<code>SET [SESSION | GLOBAL] TRANSACTION ISOLATION LEVEL {a/b/c/d}</code></p>
+<p>举例，左右各一个会话对同一个表进行操作，模拟并发：<br>
+<code>Read uncommitter</code>：a设置隔离级别为<strong>读未提交</strong>。a，b都开启事务。b此时对表进行修改操作但是没有提交，a执行查询可以得到b修改后的操作（不能解决任何并发事务问题，但性能最好）<br>
+<code>Read committed</code>：a设置隔离级别为<strong>读已提交</strong>。a，b都开启事务。b此时对表进行修改操作但是没有提交，a执行查询无法得到b修改后的操作，b提交，a再查询，可以得到b修改后的操作（解决了脏读，但是出现了不可重复读，即一个事务两次查询结果不同）<br>
+<code>Repeatable Read</code>：a设置隔离级别为<strong>可重复读</strong>。a，b都开启事务。a想对表进行插入，先做了一个对插入数据是否存在的查询，发现没有数据所以准备执行插入操作，b此时对表进行一个插入操作（与a想插入的数据主键相同）并提交事务，a进行插入操作发现插入失败因为主键重复，于是再查询，发现还是没有数据但是始终无法插入（解决了不可重复读，即同一个事务每次查询结果一致，但出现了幻读）<br>
+<code>Serializable</code>：a设置隔离级别为<strong>序列化</strong>。a，b都开启事务，a想对表进行插入，先做了一个对插入数据是否存在的查询，发现没有数据所以准备执行插入操作，b此时对表进行一个插入操作，结果b进入阻塞状态，直到a提交了事务b会话才会响应（解决了幻读，但是性能最低）<br>
+总结：<br>
+事务隔离级别越高，数据越安全，性能越低</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Yichongtian.github.io/tag/sPqvQ3r7p/" class="tag">
+                    数据库
+                  </a>
+                
+                  <a href="https://Yichongtian.github.io/tag/mZGSHk45dW/" class="tag">
+                    MySQL
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Yichongtian.github.io/post/leetcode-2liang-shu-xiang-jia/">
+                  <h3 class="post-title">
+                    leetcode 2.两数相加
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
